@@ -34,7 +34,19 @@ a small, simple router for [svelte](https://github.com/sveltejs/svelte)
     },
     {
       path: "/protected",
-      authenticator: () => {},
+      authenticator: () => {
+        // some authentication logic
+        return true;
+        // or if fails
+        return false;
+      },
+      // or
+      authenticator: async () => {
+        // some async authentication logic
+        return true;
+        // or if fails
+        return false;
+      },
       authComponent: authComponent,
       component: Protected,
     },
