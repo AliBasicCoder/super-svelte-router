@@ -1,0 +1,125 @@
+/// <reference types="cypress" />
+
+context("Default", () => {
+  beforeEach(() => {
+    cy.visit("http://localhost:5000/");
+  });
+
+  it("visit Main by default", () => {
+    cy.get("#target > #text").should("contain.text", "I'm main");
+  });
+
+  it("url input works + not found", () => {
+    cy.get("input#url-input").type("/404{enter}");
+
+    cy.location("pathname").should("eq", "/404");
+
+    cy.get("#target > #text").should("contain.text", "NotFound");
+  });
+
+  it("params works", () => {
+    // /foo/:param
+    cy.get("input#url-input").type("/foo/something{enter}");
+
+    cy.get("#target #text").should("contain.text", "I'm params");
+    cy.get("#target #data").should(
+      "contain.text",
+      JSON.stringify({ param: "something" })
+    );
+  });
+
+  it("params works - complex", () => {
+    // /foo/:pr1/bar/:pr2/bla/:pr3
+    cy.get("input#url-input").type("/foo/hello/bar/world/bla/hi{enter}");
+
+    cy.get("#target #text").should("contain.text", "I'm params");
+    cy.get("#target #data").should(
+      "contain.text",
+      JSON.stringify({ pr1: "hello", pr2: "world", pr3: "hi" })
+    );
+  });
+
+  it("lazy works", () => {
+    // /lazy
+    cy.get("input#url-input").type("/lazy{enter}");
+
+    cy.get("#target #text").should("contain.text", "Loading...");
+    cy.wait(2000);
+    cy.get("#target #text").should("contain.text", "I'm Lazy");
+  });
+
+  it("lazy with params works", () => {
+    // /lazy-pr/:param
+    cy.get("input#url-input").type("/lazy-pr/hello{enter}");
+
+    cy.get("#target #text").should("contain.text", "Loading...");
+    cy.wait(2000);
+    cy.get("#target #text").should("contain.text", "I'm Lazy");
+    cy.get("#target #data").should(
+      "contain.text",
+      JSON.stringify({ param: "hello" })
+    );
+  });
+
+  it("lazy fail works", () => {
+    // /lazy-fail
+    cy.get("input#url-input").type("/lazy-fail{enter}");
+
+    cy.get("#target #text").should("contain.text", "Loading...");
+    cy.wait(2000);
+    cy.get("#target #text").should("contain.text", "Error");
+    cy.get("#target #data").should("contain.text", "a fail");
+  });
+
+  it("authentication fails after waiting for 1s", () => {
+    // /protected-wait-false
+    cy.get("input#url-input").type("/protected-wait-false{enter}");
+
+    cy.get("#target #text").should(
+      "contain.text",
+      "Checking if you authenticated"
+    );
+    cy.wait(2000);
+    cy.get("#target #text").should(
+      "contain.text",
+      "Sorry, you are NOT authenticated"
+    );
+  });
+
+  it("authentication fails immediately", () => {
+    // /protected-false
+    cy.get("input#url-input").type("/protected-false{enter}");
+
+    cy.get("#target #text").should(
+      "contain.text",
+      "Sorry, you are NOT authenticated"
+    );
+  });
+
+  it("authentication passes after waiting for 1s", () => {
+    // /protected-wait-true/:param
+    cy.get("input#url-input").type("/protected-wait-true/something{enter}");
+
+    cy.get("#target #text").should(
+      "contain.text",
+      "Checking if you authenticated"
+    );
+    cy.wait(2000);
+    cy.get("#target #text").should("contain.text", "I'm protected");
+    cy.get("#target #data").should(
+      "contain.text",
+      JSON.stringify({ param: "something" })
+    );
+  });
+
+  it("authentication passes immediately", () => {
+    // /protected-true/:param
+    cy.get("input#url-input").type("/protected-true/something{enter}");
+
+    cy.get("#target #text").should("contain.text", "I'm protected");
+    cy.get("#target #data").should(
+      "contain.text",
+      JSON.stringify({ param: "something" })
+    );
+  });
+});
