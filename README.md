@@ -141,9 +141,9 @@ example for static component
 ## dynamic route
 
 to use a dynamic route put : before the dynamic part(s) of url
-for example
-
 you could have as many dynamic parts as you like
+
+for example
 
 `/foo/:id`
 
@@ -288,6 +288,8 @@ otherwise authentication failed and it will hide the component
 
 ### authComponent
 
+authComponent is an an option to display a component if authentication failed or pending
+
 the router will pass the following props:
 
 - authStatus
@@ -298,8 +300,6 @@ the router will pass the following props:
   represents an error if authenticator returned a promise and it reject
 - params
   Auth component have access to params
-
-authComponent is an an option to display a component if authentication failed or pending
 
 example
 
