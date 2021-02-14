@@ -1,8 +1,7 @@
 import Main from "./main.svelte";
 import Params from "./params.svelte";
 import NotFound from "./NotFound.svelte";
-import WhileLoading from "./whileLoading.svelte";
-import ifFailed from "./ifFailed.svelte";
+import Loading from "./Loading.svelte";
 import Protected from "./Protected.svelte";
 import Auth from "./Auth.svelte";
 
@@ -29,46 +28,45 @@ export const routes = [
     path: "/lazy",
     lazyLoad: {
       component: () => wait(1000, import("./lazyLoad.svelte")),
-      whileLoading: WhileLoading,
+      loading: Loading,
     },
   },
   {
     path: "/lazy-pr/:param",
     lazyLoad: {
       component: () => wait(1000, import("./lazyLoad.svelte")),
-      whileLoading: WhileLoading,
+      loading: Loading,
     },
   },
   {
     path: "/lazy-fail",
     lazyLoad: {
       component: () => wait(1000, "a fail", true),
-      whileLoading: WhileLoading,
-      ifFailed,
+      loading: Loading,
     },
   },
   {
     path: "/protected-wait-false",
     authenticator: () => wait(1000, false),
-    authenticatorComponent: Auth,
+    authComponent: Auth,
     component: Protected,
   },
   {
     path: "/protected-wait-true/:param",
     authenticator: () => wait(1000, true),
-    authenticatorComponent: Auth,
+    authComponent: Auth,
     component: Protected,
   },
   {
     path: "/protected-false",
     authenticator: () => false,
-    authenticatorComponent: Auth,
+    authComponent: Auth,
     component: Protected,
   },
   {
     path: "/protected-true/:param",
     authenticator: () => true,
-    authenticatorComponent: Auth,
+    authComponent: Auth,
     component: Protected,
   },
   {

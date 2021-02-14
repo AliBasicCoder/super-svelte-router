@@ -1,11 +1,11 @@
 <script>
-  export let authenticationResult;
+  export let authStatus;
 </script>
 
 <h1 id="text">
-  {#if authenticationResult === 0}
+  {#if authStatus === 0}
     Checking if you authenticated
-  {:else if authenticationResult === -1}
+  {:else if authStatus === -1}
     Sorry, you are NOT authenticated
   {/if}
 </h1>

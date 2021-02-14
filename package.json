@@ -3,5 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "repository": "https://github.com/AliBasicCoder/super-svelte-router.git",
   "scripts": {}
 }
