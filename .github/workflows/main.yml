@@ -16,4 +16,4 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           start: npm start
-          project: ./test
+          working-directory: ./test
