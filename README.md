@@ -4,19 +4,19 @@ a small, simple router for [svelte](https://github.com/sveltejs/svelte)
 
 # Table of contents
 
-- [Usage](#Usage)
-- [API](#API)
-  - [Not found routes](#Not%20found%20routes)
-  - [Static routes](#Static%20routes)
-  - [Dynamic routes](#Dynamic%20routes)
-  - [Lazy loaded routes](#Lazy%20loaded%20routes)
+- [Usage](#usage)
+- [API](#api)
+  - [Not found routes](#not-found-routes)
+  - [Static routes](#static-routes)
+  - [Dynamic routes](#dynamic-routes)
+  - [Lazy loaded routes](lLazy-loaded-routes)
     - [loading](#loading)
-  - [Protected routes](#Protected%20routes)
-    - [authComponent](#authComponent)
-  - [How redirecting works](#How%20redirecting%20works)
+  - [Protected routes](#protected-routes)
+    - [authComponent](#authcomponent)
+  - [How redirecting works](#how-redirecting-works)
   - [redirect](#redirect)
-  - [linkHandler](#linkHandler)
-- [Setting up rollup for code splitting](#Setting%20up%20rollup%20for%20code%20splitting)
+  - [linkHandler](#linkhandler)
+- [Setting up rollup for code splitting](#setting-up-rollup-for-code-splitting)
 
 # Usage
 
@@ -170,7 +170,7 @@ example for params component
 
 to use a lazy route you set lazyLoad.component to a function that returns a dynamic import for component
 
-you muse setup rollup first see [Setting up rollup for code splitting](#Setting%20up%20rollup%20for%20code%20splitting)
+you muse setup rollup first see [Setting up rollup for code splitting](#setting-up-rollup-for-code-splitting)
 
 example:
 
