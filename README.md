@@ -2,6 +2,22 @@
 
 a small, simple router for [svelte](https://github.com/sveltejs/svelte)
 
+# Table of contents
+
+- [Usage](#Usage)
+- [API](#API)
+  - [Not found routes](#Not%20found%20routes)
+  - [Static routes](#Static%20routes)
+  - [Dynamic routes](#Dynamic%20routes)
+  - [Lazy loaded routes](#Lazy%20loaded%20routes)
+    - [loading](#loading)
+  - [Protected routes](#Protected%20routes)
+    - [authComponent](#authComponent)
+  - [How redirecting works](#How%20redirecting%20works)
+  - [redirect](#redirect)
+  - [linkHandler](#linkHandler)
+- [Setting up rollup for code splitting](#Setting%20up%20rollup%20for%20code%20splitting)
+
 # Usage
 
 ```html
@@ -56,45 +72,11 @@ a small, simple router for [svelte](https://github.com/sveltejs/svelte)
 <Router {routes}></Router>
 ```
 
-# Setting up rollup for code splitting
-
-you should set up code splitting if will use lazy loading
-
-in rollup.config.js
-
-```js
-export default {
-  ...
-  output: {
-    sourcemap: true,
-    // change format from iffe to es
-    format: "es",
-    name: "app",
-    dir: "public/build",
-  },
-  ...
-}
-```
-
-in public/index.html
-
-```html
-<html>
-  <head>
-    ...
-    <!-- add type="module" to script tag -->
-    <script src="build/main.js" type="module"></script>
-    ...
-  </head>
-  ...
-</html>
-```
-
 # API
 
 the router will always pass a prop named param by default it's {}
 
-## 404 route
+## Not found routes
 
 DO NOT put more than one 404 route in routes
 
@@ -117,9 +99,11 @@ example for 404 component
 <h1>404 Not Found</h1>
 ```
 
-## basic (aka static) route
+## Static routes
 
-DO NOT use : in static routes
+DO NOT use `:` in static routes
+
+example:
 
 ```js
 [
@@ -138,16 +122,16 @@ example for static component
 <h1>I'm static</h1>
 ```
 
-## dynamic route
+## Dynamic routes
 
 to use a dynamic route put : before the dynamic part(s) of url
 you could have as many dynamic parts as you like
 
-for example
+for example:
 
 `/foo/:id`
 
-in this example `:id` could be replaced with anything including `:id` expect /
+in this example `:id` could be replaced with anything including `:id`
 
 example for pathname(s) that matches this example
 
@@ -158,7 +142,7 @@ example for pathname(s) that matches this example
 
 the router will pass a prop to component named params
 
-example
+example:
 
 ```js
 [
@@ -182,13 +166,13 @@ example for params component
 <h1>id is {params.id}</h1>
 ```
 
-## lazy route
+## Lazy loaded routes
 
 to use a lazy route you set lazyLoad.component to a function that returns a dynamic import for component
 
-you muse setup rollup first see _Setting up rollup for code splitting_ above
+you muse setup rollup first see [Setting up rollup for code splitting](#Setting%20up%20rollup%20for%20code%20splitting)
 
-example
+example:
 
 ```js
 [
@@ -221,6 +205,8 @@ the router will pass the following props:
 - params
   Loading component have access to params
 
+example:
+
 ```js
 [
   ...
@@ -252,7 +238,7 @@ example for Loading component
 {/if}
 ```
 
-## protected route
+## Protected routes
 
 to use a protected route you set authenticator to a function that either returns a boolean
 or a promise that returns a boolean
@@ -263,6 +249,8 @@ the router will display the protected component only if (in other words authenti
 - authenticator returned a promise that returned a truthy value
 
 otherwise authentication failed and it will hide the component
+
+example:
 
 ```js
 [
@@ -312,4 +300,80 @@ example
   {#if authStatus === 0} Checking if you authenticated {:else if authStatus ===
   -1} Sorry, you are NOT authenticated {/if}
 </h1>
+```
+
+## How redirecting works
+
+when you use [redirect](#redirect) or [linkHandler](#linkHandler)
+
+you create a custom event called "super-svelte-router-redirect-event"
+
+then Router component handles that event and change the ui
+
+ALSO: Router component handles [pop state event](https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event) and changes the ui
+
+## redirect
+
+redirect is function to redirect programmatically
+
+NOTE: do not use full urls this function only works with pathname(s)
+
+```js
+import { redirect } from "super-svelte-router";
+
+redirect("/endpoint");
+```
+
+## linkHandler
+
+linkHandler is a function that handles clicking on a link (a tag)
+
+```html
+<script>
+  import { linkHandler } from "super-svelte-router";
+
+  function handler(e) {
+    linkHandler(e);
+    // your code...
+  }
+</script>
+
+<!-- if what you is only redirecting -->
+<a href="/hello" on:click="{linkHandler}">/hello</a>
+<!-- or -->
+<a href="/hello" on:click="{handler}">/hello</a>
+```
+
+# Setting up rollup for code splitting
+
+you should set up code splitting if will use lazy loading
+
+in rollup.config.js
+
+```js
+export default {
+  ...
+  output: {
+    sourcemap: true,
+    // change format from iffe to es
+    format: "es",
+    name: "app",
+    dir: "public/build",
+  },
+  ...
+}
+```
+
+in public/index.html
+
+```html
+<html>
+  <head>
+    ...
+    <!-- add type="module" to script tag -->
+    <script src="build/main.js" type="module"></script>
+    ...
+  </head>
+  ...
+</html>
 ```
