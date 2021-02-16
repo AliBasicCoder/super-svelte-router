@@ -4,8 +4,9 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "rollup -c && sirv public",
-    "test": "start-server-and-test \"sirv public\" http://localhost:5000 \"cypress run\""
+    "start": "sirv public",
+    "test": "start-server-and-test \"rollup -c && sirv public\" http://localhost:5000 \"cypress run\"",
+    "cy": "cypress open"
   },
   "dependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",

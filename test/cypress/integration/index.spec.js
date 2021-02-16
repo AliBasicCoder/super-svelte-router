@@ -9,12 +9,16 @@ context("Default", () => {
     cy.get("#target > #text").should("contain.text", "I'm main");
   });
 
-  it("url input works + not found", () => {
+  it("url input + not found + use:link works", () => {
     cy.get("input#url-input").type("/404{enter}");
 
     cy.location("pathname").should("eq", "/404");
 
     cy.get("#target > #text").should("contain.text", "NotFound");
+
+    cy.get(".result a").first().click();
+
+    cy.get("#target > #text").should("contain.text", "I'm main");
   });
 
   it("params works", () => {

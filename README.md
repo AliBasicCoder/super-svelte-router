@@ -15,6 +15,7 @@ a small, simple router for [svelte](https://github.com/sveltejs/svelte)
     - [authComponent](#authcomponent)
   - [How redirecting works](#how-redirecting-works)
   - [redirect](#redirect)
+  - [link](#link)
   - [linkHandler](#linkhandler)
 - [Setting up rollup for code splitting](#setting-up-rollup-for-code-splitting)
 
@@ -324,7 +325,27 @@ import { redirect } from "super-svelte-router";
 redirect("/endpoint");
 ```
 
+## link
+
+link is an action for redirecting
+
+``html
+
+<script>
+  import { link } from "super-svelte-router";
+</script>
+
+<a href="/hello" use:link>/hello</a>
+
+<!-- or (not recommended) -->
+
+<a use:link="/hello">/hello</a>
+
+````
+
 ## linkHandler
+
+use [link](#link) instead
 
 linkHandler is a function that handles clicking on a link (a tag)
 
@@ -342,7 +363,7 @@ linkHandler is a function that handles clicking on a link (a tag)
 <a href="/hello" on:click="{linkHandler}">/hello</a>
 <!-- or -->
 <a href="/hello" on:click="{handler}">/hello</a>
-```
+````
 
 # Setting up rollup for code splitting
 

@@ -1,5 +1,5 @@
 <script>
-  import { Router, linkHandler, redirect } from "../../index";
+  import { Router, link, redirect } from "../../index";
   import { routes } from "./routes";
 
   let inputVal;
@@ -25,9 +25,7 @@
   <p>route: {pathname}</p>
   <div class="result">
     {#each routes as route}
-      <a href={route.path} on:click={linkHandler} style="margin-right: 5px"
-        >{route.path}</a
-      >
+      <a href={route.path} use:link>{route.path}</a>
     {/each}
 
     <div id="target">
@@ -58,5 +56,8 @@
   }
   div h3 {
     text-align: center;
+  }
+  .result a {
+    margin-right: 5px;
   }
 </style>
