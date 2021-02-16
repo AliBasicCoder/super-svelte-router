@@ -19,7 +19,11 @@
   export let pathname = window.location.pathname;
 
   window.addEventListener("super-svelte-router-redirect-event", (e) => {
-    pathname = e.detail;
+    pathname = e.detail.pathname;
+    if (e.detail.replace) {
+      history.replaceState(undefined, undefined, pathname);
+      return;
+    }
     history.pushState(undefined, undefined, pathname);
   });
 

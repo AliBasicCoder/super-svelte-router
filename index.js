@@ -1,8 +1,8 @@
 export { default as Router } from "./Router.svelte";
 
-function createRedirectEvent(pathname) {
+function createRedirectEvent(pathname, replace) {
   return new CustomEvent("super-svelte-router-redirect-event", {
-    detail: pathname,
+    detail: { pathname, replace },
   });
 }
 
@@ -24,6 +24,10 @@ export function linkHandler(e) {
   window.dispatchEvent(createRedirectEvent(new URL(e.target.href).pathname));
 }
 
-export function redirect(path) {
-  window.dispatchEvent(createRedirectEvent(path));
+/**
+ * @param {string} path
+ * @param {boolean | undefined} replace
+ */
+export function redirect(path, replace) {
+  window.dispatchEvent(createRedirectEvent(path, replace));
 }

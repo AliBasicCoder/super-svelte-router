@@ -311,7 +311,7 @@ you create a custom event called "super-svelte-router-redirect-event"
 
 then Router component handles that event and change the ui
 
-ALSO: Router component handles [pop state event](https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event) and changes the ui
+ALSO Router component handles [pop state event](https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event) and changes the ui
 
 ## redirect
 
@@ -323,14 +323,15 @@ NOTE: do not use full urls this function only works with pathname(s)
 import { redirect } from "super-svelte-router";
 
 redirect("/endpoint");
+// replace instead of push
+redirect("/endpoint", true);
 ```
 
 ## link
 
 link is an action for redirecting
 
-``html
-
+```html
 <script>
   import { link } from "super-svelte-router";
 </script>
@@ -340,8 +341,7 @@ link is an action for redirecting
 <!-- or (not recommended) -->
 
 <a use:link="/hello">/hello</a>
-
-````
+```
 
 ## linkHandler
 
@@ -363,7 +363,7 @@ linkHandler is a function that handles clicking on a link (a tag)
 <a href="/hello" on:click="{linkHandler}">/hello</a>
 <!-- or -->
 <a href="/hello" on:click="{handler}">/hello</a>
-````
+```
 
 # Setting up rollup for code splitting
 
