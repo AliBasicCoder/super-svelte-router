@@ -1,11 +1,16 @@
 # super-svelte-router
 
+this project follows [semver](https://semver.org/)
+
 a small, simple router for [svelte](https://github.com/sveltejs/svelte)
 
 # Table of contents
 
 - [Usage](#usage)
 - [API](#api)
+  - [routerStore](#routerstore)
+    - [redirect](#redirect-method)
+  - [noProps](#noprops)
   - [Not found routes](#not-found-routes)
   - [Static routes](#static-routes)
   - [Dynamic routes](#dynamic-routes)
@@ -75,7 +80,59 @@ a small, simple router for [svelte](https://github.com/sveltejs/svelte)
 
 # API
 
-the router will always pass a prop named param by default it's {}
+## routerStore
+
+routerStore is a custom svelte store that contain the status of the router
+
+Also the Router will pass every property on $routerStore as props
+
+for example you could do this:
+
+```html
+<script>
+  export let params;
+
+  console.log(params);
+</script>
+```
+
+instead of:
+
+```html
+<script>
+  import { routerStore } from "super-svelte-router";
+
+  console.log($routerStore.params);
+</script>
+```
+
+To prevent that pass noProp prop to the Router
+
+## noProps
+
+```html
+<script>
+  import { Router } from "super-svelte-router";
+
+  const routes = [...];
+</script>
+
+<Router {routes} noProps="{true}"></Router>
+```
+
+### redirect method
+
+routerStore.redirect is used for redirecting
+
+example:
+
+```js
+import { routerStore } from "super-svelte-router";
+
+routerStore.redirect("/hello");
+// to replace instead of push
+routerStore.redirect("/hello", true);
+```
 
 ## Not found routes
 
@@ -141,7 +198,7 @@ example for pathname(s) that matches this example
 `/foo/:id`
 `/foo/` <-- be careful with this one
 
-the router will pass a prop to component named params
+use [routerStore](#routerstore) to access params
 
 example:
 
@@ -160,11 +217,12 @@ example for params component
 
 ```html
 <script>
-  export let params;
-  console.log(params); // => { id: "100" }
+  import { routerStore } from "super-svelte-router";
+
+  console.log($routerStore.params); // => { id: "100" }
 </script>
 
-<h1>id is {params.id}</h1>
+<h1>id is {$routerStore.params.id}</h1>
 ```
 
 ## Lazy loaded routes
@@ -195,12 +253,12 @@ example:
 loading is an option to display a component while the lazy-loaded component is loading
 or failed loading
 
-the router will pass the following props:
+[routerStore](#routerstore) value will have these properties:
 
 - loadingStatus
-  represents the status of loading
-  if 0 component is still loading
-  if -1 loading failed
+  a string that represents the status of loading
+  if `pending` component is still loading
+  if `error` loading failed
 - error (optional)
   represents an error happened while loading component
 - params
@@ -226,16 +284,16 @@ example for Loading component
 
 ```html
 <script>
-  export let loadingStatus;
-  export let error;
+  import { routerStore } from "super-svelte-router";
 </script>
 
 <h1>
-  {#if loadingStatus === 0} Loading... {:else if loadingStatus === -1} Error
-  {/if}
+  {#if $routerStore.loadingStatus === "pending"} Loading... {:else if
+  $routerStore.loadingStatus === "error"} Error {/if}
 </h1>
-{#if loadingStatus === -1}
-<div>error {error}</div>
+
+{#if $routerStore.loadingStatus === -1}
+<div>error {$routerStore.error}</div>
 {/if}
 ```
 
@@ -244,7 +302,7 @@ example for Loading component
 to use a protected route you set authenticator to a function that either returns a boolean
 or a promise that returns a boolean
 
-the router will display the protected component only if (in other words authentication succeeded):
+the router will display the protected component only if:
 
 - authenticator returned a truthy value
 - authenticator returned a promise that returned a truthy value
@@ -282,9 +340,10 @@ authComponent is an an option to display a component if authentication failed or
 the router will pass the following props:
 
 - authStatus
-  represents the status of authentication
-  if it's 0 authenticator returned a promise and it's pending
-  if it's -1 authentication failed
+  a string that represents the status of authentication
+  if `pending` authenticator returned a promise and it's pending
+  if `fail` authentication failed
+  if `error` authenticator returned a promise and it reject
 - error (optional)
   represents an error if authenticator returned a promise and it reject
 - params
@@ -294,26 +353,20 @@ example
 
 ```html
 <script>
-  export let authStatus;
+  import { routerStore } from "super-svelte-router";
 </script>
 
 <h1>
-  {#if authStatus === 0} Checking if you authenticated {:else if authStatus ===
-  -1} Sorry, you are NOT authenticated {/if}
+  {#if $routerStore.authStatus === "pending"} Checking if you authenticated
+  {:else if $routerStore.authStatus === "fail"} Sorry, you are NOT authenticated
+  {:else if $routerStore.authStatus === "error"} Sorry, Unknown error happened
+  {/if}
 </h1>
 ```
 
-## How redirecting works
-
-when you use [redirect](#redirect) or [linkHandler](#linkHandler)
-
-you create a custom event called "super-svelte-router-redirect-event"
-
-then Router component handles that event and change the ui
-
-ALSO Router component handles [pop state event](https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event) and changes the ui
-
 ## redirect
+
+use [routerStore.redirect](#redirect-method) instead
 
 redirect is function to redirect programmatically
 

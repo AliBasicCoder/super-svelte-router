@@ -1,17 +1,18 @@
 <script>
-  import { Router, link, redirect } from "../../index";
+  import { Router, link, routerStore } from "../../index";
   import { routes } from "./routes";
 
   let inputVal;
   let updateOnEnter = true;
   let updateOnType = false;
   let decodeUri = false;
-  let pathname = "/";
 
   function go() {
     if (decodeUri)
-      redirect(inputVal.split("/").map(encodeURIComponent).join("/"));
-    else redirect(inputVal);
+      routerStore.redirect(
+        inputVal.split("/").map(encodeURIComponent).join("/")
+      );
+    else routerStore.redirect(inputVal);
   }
 
   function keyup(e) {
@@ -22,14 +23,14 @@
 
 <div>
   <h3>super-svelte-router test</h3>
-  <p>route: {pathname}</p>
+  <p>route: {$routerStore.pathname}</p>
   <div class="result">
     {#each routes as route}
       <a href={route.path} use:link>{route.path}</a>
     {/each}
 
     <div id="target">
-      <Router {routes} bind:pathname />
+      <Router {routes} />
     </div>
   </div>
   <div>

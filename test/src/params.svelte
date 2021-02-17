@@ -1,4 +1,5 @@
 <script>
+  // testing props
   export let params;
 </script>
 

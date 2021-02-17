@@ -1,19 +1,18 @@
 <script>
-  export let loadingStatus;
-  export let error;
+  import { routerStore } from "../../index";
 </script>
 
 <h1 id="text">
-  {#if loadingStatus === 0}
+  {#if $routerStore.loadingStatus === "pending"}
     Loading...
-  {:else if loadingStatus === -1}
+  {:else}
     Error
   {/if}
 </h1>
 
 <div>
-  {#if loadingStatus === -1}
+  {#if $routerStore.loadingStatus === "error"}
     error
-    <div id="data">{error}</div>
+    <div id="data">{$routerStore.error}</div>
   {/if}
 </div>

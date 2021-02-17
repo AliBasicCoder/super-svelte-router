@@ -1,11 +1,11 @@
 <script>
-  export let authStatus;
+  import { routerStore } from "../../index";
 </script>
 
 <h1 id="text">
-  {#if authStatus === 0}
+  {#if $routerStore.authStatus === "pending"}
     Checking if you authenticated
-  {:else if authStatus === -1}
+  {:else}
     Sorry, you are NOT authenticated
   {/if}
 </h1>

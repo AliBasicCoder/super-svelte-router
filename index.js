@@ -1,10 +1,4 @@
-export { default as Router } from "./Router.svelte";
-
-function createRedirectEvent(pathname, replace) {
-  return new CustomEvent("super-svelte-router-redirect-event", {
-    detail: { pathname, replace },
-  });
-}
+import { routerStore } from "./util";
 
 /**
  * @param {HTMLLinkElement} node
@@ -19,15 +13,23 @@ export function link(node, href) {
   };
 }
 
+/**
+ * @deprecated use link action instead
+ * @param {MouseEvent} e
+ */
 export function linkHandler(e) {
   e.preventDefault();
-  window.dispatchEvent(createRedirectEvent(new URL(e.target.href).pathname));
+  routerStore.redirect(new URL(e.target.href).pathname);
 }
 
 /**
+ * @deprecated use routerStore.redirect instead
  * @param {string} path
  * @param {boolean | undefined} replace
  */
 export function redirect(path, replace) {
-  window.dispatchEvent(createRedirectEvent(path, replace));
+  routerStore.redirect(path, replace);
 }
+
+export { routerStore };
+export { default as Router } from "./Router.svelte";

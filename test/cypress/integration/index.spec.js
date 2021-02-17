@@ -6,7 +6,7 @@ context("Default", () => {
   });
 
   it("visit Main by default", () => {
-    cy.get("#target > #text").should("contain.text", "I'm main");
+    cy.get("#target #text").should("contain.text", "I'm main");
   });
 
   it("url input + not found + use:link works", () => {
@@ -14,11 +14,17 @@ context("Default", () => {
 
     cy.location("pathname").should("eq", "/404");
 
-    cy.get("#target > #text").should("contain.text", "NotFound");
+    cy.get("#target #text").should("contain.text", "NotFound");
 
     cy.get(".result a").first().click();
 
-    cy.get("#target > #text").should("contain.text", "I'm main");
+    cy.get("#target #text").should("contain.text", "I'm main");
+  });
+
+  it("navigation works", () => {
+    cy.get("input#url-input").type("/404{enter}");
+    cy.go(-1);
+    cy.get("#target #text").should("contain.text", "I'm main");
   });
 
   it("params works", () => {
@@ -48,7 +54,7 @@ context("Default", () => {
     cy.get("input#url-input").type("/lazy{enter}");
 
     cy.get("#target #text").should("contain.text", "Loading...");
-    cy.wait(2000);
+    cy.wait(1000);
     cy.get("#target #text").should("contain.text", "I'm Lazy");
   });
 
@@ -57,7 +63,7 @@ context("Default", () => {
     cy.get("input#url-input").type("/lazy-pr/hello{enter}");
 
     cy.get("#target #text").should("contain.text", "Loading...");
-    cy.wait(2000);
+    cy.wait(1000);
     cy.get("#target #text").should("contain.text", "I'm Lazy");
     cy.get("#target #data").should(
       "contain.text",
@@ -70,7 +76,7 @@ context("Default", () => {
     cy.get("input#url-input").type("/lazy-fail{enter}");
 
     cy.get("#target #text").should("contain.text", "Loading...");
-    cy.wait(2000);
+    cy.wait(1000);
     cy.get("#target #text").should("contain.text", "Error");
     cy.get("#target #data").should("contain.text", "a fail");
   });
@@ -83,7 +89,7 @@ context("Default", () => {
       "contain.text",
       "Checking if you authenticated"
     );
-    cy.wait(2000);
+    cy.wait(1000);
     cy.get("#target #text").should(
       "contain.text",
       "Sorry, you are NOT authenticated"
@@ -108,7 +114,7 @@ context("Default", () => {
       "contain.text",
       "Checking if you authenticated"
     );
-    cy.wait(2000);
+    cy.wait(1000);
     cy.get("#target #text").should("contain.text", "I'm protected");
     cy.get("#target #data").should(
       "contain.text",
