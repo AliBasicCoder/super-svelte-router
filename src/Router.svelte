@@ -1,5 +1,5 @@
 <script>
-  import { routerStore } from "./util";
+  import { routerStore } from "./routerStore.js";
 
   /**
    * @typedef {Object} LazyLoadOption

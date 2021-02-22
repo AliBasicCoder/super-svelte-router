@@ -1,5 +1,5 @@
 <script>
-  import { Router, link, routerStore } from "../../index";
+  import { Router, link, routerStore } from "super-svelte-router";
   import { routes } from "./routes";
 
   let inputVal;

@@ -1,4 +1,4 @@
-import { routerStore } from "./util";
+import { routerStore } from "./routerStore";
 
 /**
  * @param {HTMLLinkElement} node

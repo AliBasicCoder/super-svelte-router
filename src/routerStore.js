@@ -9,37 +9,6 @@ const defaultValue = {
   routes: [],
 };
 
-function getRoute(pathname, routes) {
-  let params = {};
-  let notFoundIndex;
-  const pathnameParts = pathname.split("/");
-  for (let i = 0; i < routes.length; i++) {
-    const route = routes[i];
-    params = {};
-    if (route.path === "**") {
-      notFoundIndex = i;
-      continue;
-    }
-    let matches = true;
-    const routeParts = route.path.split("/");
-    if (routeParts.length !== pathnameParts.length) continue;
-    for (const [routePart, pathnamePart] of LO(routeParts, pathnameParts)) {
-      if (routePart.startsWith(":")) {
-        params[routePart.slice(1)] = decodeURI(pathnamePart);
-        continue;
-      }
-      if (routePart !== pathnamePart) {
-        matches = false;
-        break;
-      }
-    }
-    if (matches) {
-      return [i, params];
-    }
-  }
-  return [notFoundIndex, params];
-}
-
 function routerStoreCreator() {
   const { subscribe, update } = writable(defaultValue);
 
@@ -138,6 +107,37 @@ export const routerStore = routerStoreCreator();
 window.addEventListener("popstate", () => {
   routerStore.redirect(window.location.pathname);
 });
+
+function getRoute(pathname, routes) {
+  let params = {};
+  let notFoundIndex;
+  const pathnameParts = pathname.split("/");
+  for (let i = 0; i < routes.length; i++) {
+    const route = routes[i];
+    params = {};
+    if (route.path === "**") {
+      notFoundIndex = i;
+      continue;
+    }
+    let matches = true;
+    const routeParts = route.path.split("/");
+    if (routeParts.length !== pathnameParts.length) continue;
+    for (const [routePart, pathnamePart] of LO(routeParts, pathnameParts)) {
+      if (routePart.startsWith(":")) {
+        params[routePart.slice(1)] = decodeURI(pathnamePart);
+        continue;
+      }
+      if (routePart !== pathnamePart) {
+        matches = false;
+        break;
+      }
+    }
+    if (matches) {
+      return [i, params];
+    }
+  }
+  return [notFoundIndex, params];
+}
 
 /**
  * LO stands for LoopOver

@@ -1,8 +1,26 @@
 {
   "name": "super-svelte-router",
   "version": "1.1.1",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "svelte": "src/index.js",
   "license": "MIT",
   "repository": "https://github.com/AliBasicCoder/super-svelte-router.git",
-  "scripts": {}
+  "scripts": {
+    "build": "rollup -c",
+    "test": "npm --prefix=./test run test",
+    "prepublishOnly": "rollup -c && npm --prefix=./test run test"
+  },
+  "keywords": [
+    "svelte",
+    "router",
+    "url"
+  ],
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^17.1.0",
+    "@rollup/plugin-node-resolve": "^11.2.0",
+    "rollup": "^2.39.0",
+    "rollup-plugin-svelte": "^7.1.0",
+    "svelte": "^3.32.3"
+  }
 }
