@@ -1,5 +1,4 @@
 <script>
-  import Auth from "./test/src/Auth.svelte";
   import { routerStore } from "./util";
 
   /**
