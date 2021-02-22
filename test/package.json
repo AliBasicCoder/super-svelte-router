@@ -4,7 +4,8 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "sirv public",
+    "start": "rollup -c && sirv public",
+    "host": "sirv public",
     "test": "start-server-and-test \"rollup -c && sirv public\" http://localhost:5000 \"cypress run\"",
     "cy": "cypress open"
   },
