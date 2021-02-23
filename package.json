@@ -3,7 +3,6 @@
   "version": "1.1.2",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
-  "svelte": "src/index.js",
   "license": "MIT",
   "repository": "https://github.com/AliBasicCoder/super-svelte-router.git",
   "scripts": {
@@ -20,6 +19,8 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.1.0",
     "@rollup/plugin-node-resolve": "^11.2.0",
+    "@rollup/plugin-typescript": "^8.2.0",
+    "@tsconfig/svelte": "^1.0.10",
     "rollup": "^2.39.0",
     "rollup-plugin-svelte": "^7.1.0",
     "svelte": "^3.32.3"

@@ -1,9 +1,6 @@
 import { routerStore } from "./routerStore";
 
-/**
- * @param {HTMLLinkElement} node
- */
-export function link(node, href) {
+export function link(node: HTMLLinkElement, href?: string) {
   href && (node.href = href);
   node.addEventListener("click", linkHandler);
   return {
@@ -15,19 +12,16 @@ export function link(node, href) {
 
 /**
  * @deprecated use link action instead
- * @param {MouseEvent} e
  */
-export function linkHandler(e) {
+export function linkHandler(e: MouseEvent) {
   e.preventDefault();
-  routerStore.redirect(new URL(e.target.href).pathname);
+  routerStore.redirect(new URL((e.target as HTMLLinkElement)?.href).pathname);
 }
 
 /**
  * @deprecated use routerStore.redirect instead
- * @param {string} path
- * @param {boolean | undefined} replace
  */
-export function redirect(path, replace) {
+export function redirect(path: string, replace?: boolean) {
   routerStore.redirect(path, replace);
 }
 
