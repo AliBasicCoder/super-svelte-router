@@ -14,11 +14,13 @@ a small, simple router for [svelte](https://github.com/sveltejs/svelte)
   - [Not found routes](#not-found-routes)
   - [Static routes](#static-routes)
   - [Dynamic routes](#dynamic-routes)
-  - [Lazy loaded routes](lLazy-loaded-routes)
+  - [Lazy loaded routes](#Lazy-loaded-routes)
     - [loading](#loading)
   - [Protected routes](#protected-routes)
     - [authComponent](#authcomponent)
-  - [How redirecting works](#how-redirecting-works)
+  - [Metadata](#metadata)
+    - [defaultLoading](#defaultloading)
+    - [defaultAuthComponent](defaultauthcomponent)
   - [redirect](#redirect)
   - [link](#link)
   - [linkHandler](#linkhandler)
@@ -253,6 +255,8 @@ example:
 loading is an option to display a component while the lazy-loaded component is loading
 or failed loading
 
+if you want to set a default loading component see [defaultLoading](#defaultloading)
+
 [routerStore](#routerstore) value will have these properties:
 
 - loadingStatus
@@ -337,6 +341,8 @@ example:
 
 authComponent is an an option to display a component if authentication failed or pending
 
+if you want to set a default authComponent see [defaultAuthComponent](#defaultauthcomponent)
+
 the router will pass the following props:
 
 - authStatus
@@ -363,6 +369,28 @@ example
   {/if}
 </h1>
 ```
+
+## Metadata
+
+metadata is an object that contains some metadata for the router
+
+```js
+[
+  {
+    metadata: true,
+    defaultLoading: loading,
+    defaultAuthComponent: Auth,
+  },
+];
+```
+
+### defaultLoading
+
+if [loading](#loading) is not set the routes will use it as a replacement
+
+### defaultAuthComponent
+
+if [authComponent](#authcomponent) is not set will use it as a replacement
 
 ## redirect
 
