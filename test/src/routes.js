@@ -2,6 +2,7 @@ import Main from "./main.svelte";
 import Params from "./params.svelte";
 import NotFound from "./NotFound.svelte";
 import Loading from "./Loading.svelte";
+import Loading2 from "./Loading2.svelte";
 import Protected from "./Protected.svelte";
 import Auth from "./Auth.svelte";
 
@@ -12,6 +13,10 @@ function wait(ms, value, rej) {
 }
 
 export const routes = [
+  {
+    metadata: true,
+    defaultLoading: Loading2,
+  },
   {
     path: "/",
     component: Main,
@@ -29,6 +34,12 @@ export const routes = [
     lazyLoad: {
       component: () => wait(1000, import("./lazyLoad.svelte")),
       loading: Loading,
+    },
+  },
+  {
+    path: "/lazy-default",
+    lazyLoad: {
+      component: () => wait(1000, import("./lazyLoad.svelte")),
     },
   },
   {

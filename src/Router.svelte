@@ -1,5 +1,5 @@
 <script>
-  import { routerStore } from "./routerStore.ts";
+  import { routerStore } from "./routerStore.js";
 
   export let routes;
   export let noProps;

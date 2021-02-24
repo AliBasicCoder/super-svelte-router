@@ -1,7 +1,0 @@
-{
-  "compilerOptions": {
-    "downlevelIteration": true,
-    "strict": true
-  },
-  "extends": "@tsconfig/svelte/tsconfig.json"
-}

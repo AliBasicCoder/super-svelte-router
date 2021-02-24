@@ -58,6 +58,15 @@ context("Default", () => {
     cy.get("#target #text").should("contain.text", "I'm Lazy");
   });
 
+  it("metadata - defaultLoading works", () => {
+    // /lazy-default
+    cy.get("input#url-input").type("/lazy-default/{enter}");
+
+    cy.get("#target #text").should("contain.text", "Loading... (2)");
+    cy.wait(1000);
+    cy.get("#target #text").should("contain.text", "I'm Lazy");
+  });
+
   it("lazy with params works", () => {
     // /lazy-pr/:param
     cy.get("input#url-input").type("/lazy-pr/hello{enter}");
