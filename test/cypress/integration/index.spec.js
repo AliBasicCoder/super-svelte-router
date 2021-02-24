@@ -60,7 +60,7 @@ context("Default", () => {
 
   it("metadata - defaultLoading works", () => {
     // /lazy-default
-    cy.get("input#url-input").type("/lazy-default/{enter}");
+    cy.get("input#url-input").type("/lazy-default{enter}");
 
     cy.get("#target #text").should("contain.text", "Loading... (2)");
     cy.wait(1000);

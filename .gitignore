@@ -2,3 +2,6 @@ node_modules
 public/build
 dist/
 test/cypress/screenshots
+test/cypress/fixtures
+test/cypress/plugins
+test/cypress/support

@@ -7,8 +7,7 @@
     Loading...
   {:else}
     Error
-  {/if}
-  (2)
+  {/if} (2)
 </h1>
 
 <div>

@@ -26,7 +26,9 @@
   <p>route: {$routerStore.pathname}</p>
   <div class="result">
     {#each routes as route}
-      <a href={route.path} use:link>{route.path}</a>
+      {#if !route.metadata}
+        <a href={route.path} use:link>{route.path}</a>
+      {/if}
     {/each}
 
     <div id="target">
