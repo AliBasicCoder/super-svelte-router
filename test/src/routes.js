@@ -81,6 +81,52 @@ export const routes = [
     component: Protected,
   },
   {
+    path: "/inline",
+    component: "inline",
+  },
+  {
+    path: "/inline-pr/:param",
+    component: "inline",
+  },
+  {
+    path: "/inline-protected-wait-false",
+    authenticator: () => wait(1000, false),
+    authComponent: Auth,
+    component: "protected",
+  },
+  {
+    path: "/inline-protected-wait-true/:param",
+    authenticator: () => wait(1000, true),
+    authComponent: "auth",
+    component: "protected",
+  },
+  {
+    path: "/inline-protected-false",
+    authenticator: () => false,
+    authComponent: "auth",
+    component: Protected,
+  },
+  {
+    path: "/inline-protected-true/:param",
+    authenticator: () => true,
+    authComponent: Auth,
+    component: "protected",
+  },
+  {
+    path: "/inline-loading/:param",
+    lazyLoad: {
+      component: () => wait(1000, import("./lazyLoad.svelte")),
+      loading: "loading",
+    },
+  },
+  {
+    path: "/inline-loading-fail",
+    lazyLoad: {
+      component: () => wait(1000, "a fail", true),
+      loading: "loading",
+    },
+  },
+  {
     path: "**",
     component: NotFound,
   },

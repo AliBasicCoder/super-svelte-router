@@ -11,6 +11,7 @@ const defaultValue = {
   loadingStatus: "none",
   component: undefined,
   error: undefined,
+  targetName: undefined,
   routes: [],
 };
 
@@ -23,25 +24,33 @@ function routerStoreCreator() {
     },
     renderRoute(route, metadata) {
       if (!isLazyRoute(route)) {
-        return { component: route.component };
+        return typeof route.component === "string"
+          ? { targetName: route.component }
+          : { component: route.component };
       }
       route.lazyLoad
         .component()
-        .then((md) => this.update({ component: md.default }))
+        .then((md) =>
+          this.update({ component: md.default, targetName: undefined })
+        )
         .catch((error) => {
           this.update({ error, loadingStatus: "error" });
           console.error(error);
         });
       return {
         component:
-          route.lazyLoad.loading === false
+          route.lazyLoad.loading === false ||
+          typeof route.lazyLoad.loading === "string"
             ? undefined
             : route.lazyLoad.loading || metadata?.defaultLoading,
+        targetName:
+          typeof route.lazyLoad.loading === "string" && route.lazyLoad.loading,
         loadingStatus: "pending",
       };
     },
     render(value, pathname) {
       let component;
+      let targetName;
       let error;
       let authStatus = "none";
       let loadingStatus = "none";
@@ -76,9 +85,14 @@ function routerStoreCreator() {
             (component = route.authComponent);
         }
       }
+      if (typeof component === "string") {
+        targetName = component;
+        component = undefined;
+      }
       return {
         routes: value.routes,
         component,
+        targetName,
         error,
         authStatus,
         loadingStatus,

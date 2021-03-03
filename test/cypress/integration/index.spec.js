@@ -141,4 +141,99 @@ context("Default", () => {
       JSON.stringify({ param: "something" })
     );
   });
+
+  it("inline - works", () => {
+    // /inline
+    cy.get("input#url-input").type("/inline{enter}");
+
+    cy.get("#target #text").should("contain.text", "Inline Params");
+  });
+
+  it("inline - params works", () => {
+    // /inline-pr/:params
+    cy.get("input#url-input").type("/inline-pr/something{enter}");
+
+    cy.get("#target #text").should("contain.text", "Inline Params");
+    cy.get("#target #data").should(
+      "contain.text",
+      JSON.stringify({ param: "something" })
+    );
+  });
+
+  it("inline - authentication fails after waiting for 1s", () => {
+    // /inline-protected-wait-false
+    cy.get("input#url-input").type("/inline-protected-wait-false{enter}");
+
+    cy.get("#target #text").should(
+      "contain.text",
+      "Checking if you authenticated"
+    );
+    cy.wait(1000);
+    cy.get("#target #text").should(
+      "contain.text",
+      "Sorry, you are NOT authenticated"
+    );
+  });
+
+  it("inline - authentication passes after waiting for 1s", () => {
+    // /inline-protected-wait-true/:param
+    cy.get("input#url-input").type(
+      "/inline-protected-wait-true/something{enter}"
+    );
+
+    cy.get("#target #text").should(
+      "contain.text",
+      "Inline Checking if you authenticated"
+    );
+    cy.wait(1000);
+    cy.get("#target #text").should("contain.text", "Inline Protected");
+    cy.get("#target #data").should(
+      "contain.text",
+      JSON.stringify({ param: "something" })
+    );
+  });
+
+  it("inline - authentication fails immediately", () => {
+    // /inline-protected-false
+    cy.get("input#url-input").type("/inline-protected-false{enter}");
+
+    cy.get("#target #text").should(
+      "contain.text",
+      "Inline Sorry, you are NOT authenticated"
+    );
+  });
+
+  it("inline - authentication passes immediately", () => {
+    // /inline-protected-true/:param
+    cy.get("input#url-input").type("/inline-protected-true/something{enter}");
+
+    cy.get("#target #text").should("contain.text", "Inline Protected");
+    cy.get("#target #data").should(
+      "contain.text",
+      JSON.stringify({ param: "something" })
+    );
+  });
+
+  it("inline - lazy with params works", () => {
+    // /inline-loading/:param
+    cy.get("input#url-input").type("/inline-loading/hello{enter}");
+
+    cy.get("#target #text").should("contain.text", "Inline Loading...");
+    cy.wait(1000);
+    cy.get("#target #text").should("contain.text", "I'm Lazy");
+    cy.get("#target #data").should(
+      "contain.text",
+      JSON.stringify({ param: "hello" })
+    );
+  });
+
+  it("inline - lazy fail works", () => {
+    // /inline-loading-fail
+    cy.get("input#url-input").type("/inline-loading-fail{enter}");
+
+    cy.get("#target #text").should("contain.text", "Inline Loading...");
+    cy.wait(1000);
+    cy.get("#target #text").should("contain.text", "Inline Error");
+    cy.get("#target #data").should("contain.text", "a fail");
+  });
 });

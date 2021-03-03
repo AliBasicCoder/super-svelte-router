@@ -1,5 +1,5 @@
 <script>
-  import { Router, link, routerStore } from "super-svelte-router";
+  import { Router, Component, link, routerStore } from "super-svelte-router";
   import { routes } from "./routes";
 
   let inputVal;
@@ -32,7 +32,39 @@
     {/each}
 
     <div id="target">
-      <Router {routes} />
+      <Router {routes}>
+        <Component name="loading" let:loadingStatus let:error>
+          <h1 id="text">
+            Inline {#if loadingStatus === "pending"}
+              Loading...
+            {:else}
+              Error
+            {/if}
+          </h1>
+          <div id="data">{error}</div>
+        </Component>
+        <Component name="auth" let:authStatus>
+          <h1 id="text">
+            Inline {#if authStatus === "pending"}
+              Checking if you authenticated
+            {:else}
+              Sorry, you are NOT authenticated
+            {/if}
+          </h1>
+        </Component>
+        <Component name="protected" let:params>
+          <h1 id="text">Inline Protected</h1>
+          <div>
+            my params are <div id="data">{JSON.stringify(params)}</div>
+          </div>
+        </Component>
+        <Component name="inline" let:params>
+          <h1 id="text">Inline Params</h1>
+          <div>
+            my params are <div id="data">{JSON.stringify(params)}</div>
+          </div>
+        </Component>
+      </Router>
     </div>
   </div>
   <div>

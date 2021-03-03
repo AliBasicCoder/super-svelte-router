@@ -33,3 +33,4 @@ export function redirect(path, replace) {
 }
 export { routerStore };
 export { default as Router } from "./Router.svelte";
+export { default as Component } from "./Component.svelte";

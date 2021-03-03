@@ -12,3 +12,5 @@
 {:else}
   <svelte:component this={$routerStore.component} {...$routerStore} />
 {/if}
+
+<slot />
