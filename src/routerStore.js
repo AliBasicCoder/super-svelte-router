@@ -122,7 +122,7 @@ function getRoute(pathname, routes) {
   let params = {};
   let notFoundRoute;
   let metadataRoute;
-  const pathnameParts = trimSlash(pathname).split("/");
+  const pathnameParts = pathname.split("/");
   for (let i = 0; i < routes.length; i++) {
     const route = routes[i];
     if (isMetadataRoute(route)) {
@@ -135,10 +135,14 @@ function getRoute(pathname, routes) {
       continue;
     }
     let matches = true;
-    const routeParts = trimSlash(route.path).split("/");
-    if (routeParts.length !== pathnameParts.length) continue;
+    const routeParts = route.path.split("/");
     for (const [routePart, pathnamePart] of LO(routeParts, pathnameParts)) {
-      if (routePart.startsWith(":")) {
+      if (
+        (pathnamePart === undefined && routePart === "") ||
+        (routePart === undefined && pathnamePart === "")
+      )
+        continue;
+      if (routePart?.startsWith(":")) {
         params[routePart.slice(1)] = decodeURI(pathnamePart);
         continue;
       }
@@ -152,10 +156,6 @@ function getRoute(pathname, routes) {
     }
   }
   return [notFoundRoute, params, metadataRoute];
-}
-
-function trimSlash(string) {
-  return string.endsWith("/") && string !== "/" ? string.slice(0, -1) : string;
 }
 
 /** LO stands for LoopOver */

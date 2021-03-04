@@ -29,7 +29,7 @@ context("Default", () => {
 
   it("params works", () => {
     // /foo/:param
-    cy.get("input#url-input").type("/foo/something{enter}");
+    cy.get("input#url-input").type("/foo/something/{enter}");
 
     cy.get("#target #text").should("contain.text", "I'm params");
     cy.get("#target #data").should(
@@ -51,7 +51,7 @@ context("Default", () => {
 
   it("lazy works", () => {
     // /lazy
-    cy.get("input#url-input").type("/lazy{enter}");
+    cy.get("input#url-input").type("/lazy/{enter}");
 
     cy.get("#target #text").should("contain.text", "Loading...");
     cy.wait(1000);
@@ -117,7 +117,7 @@ context("Default", () => {
 
   it("authentication passes after waiting for 1s", () => {
     // /protected-wait-true/:param
-    cy.get("input#url-input").type("/protected-wait-true/something{enter}");
+    cy.get("input#url-input").type("/protected-wait-true/something/{enter}");
 
     cy.get("#target #text").should(
       "contain.text",

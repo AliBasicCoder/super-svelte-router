@@ -22,7 +22,7 @@ export const routes = [
     component: Main,
   },
   {
-    path: "/foo/:param",
+    path: "/foo/:param/",
     component: Params,
   },
   {
@@ -37,7 +37,7 @@ export const routes = [
     },
   },
   {
-    path: "/lazy-default",
+    path: "/lazy-default/",
     lazyLoad: {
       component: () => wait(2000, import("./lazyLoad.svelte")),
     },
