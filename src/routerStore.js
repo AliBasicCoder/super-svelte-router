@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import { writable, derived } from "svelte/store";
 
 const isLazyRoute = (obj) => obj.lazyLoad;
 const isStaticRoute = (obj) => obj.component;
@@ -12,6 +12,7 @@ const defaultValue = {
   component: undefined,
   error: undefined,
   targetName: undefined,
+  currentRoute: undefined,
   routes: [],
 };
 
@@ -98,6 +99,7 @@ function routerStoreCreator() {
         loadingStatus,
         pathname,
         params,
+        currentRoute: route,
         ...(allowShowing && this.renderRoute(route, metadata)),
       };
     },
@@ -113,6 +115,10 @@ function routerStoreCreator() {
 }
 
 export const routerStore = routerStoreCreator();
+
+export const isActive = derived(routerStore, ($routerStore) => (path) =>
+  $routerStore.currentRoute.path === path
+);
 
 window.addEventListener("popstate", () => {
   routerStore.redirect(window.location.pathname);
