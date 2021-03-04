@@ -21,6 +21,8 @@ a small, simple router for [svelte](https://github.com/sveltejs/svelte)
   - [Metadata](#metadata)
     - [defaultLoading](#defaultloading)
     - [defaultAuthComponent](defaultauthcomponent)
+  - [Component](#component)
+  - [isActive](#isactive)
   - [redirect](#redirect)
   - [link](#link)
   - [linkHandler](#linkhandler)
@@ -391,6 +393,59 @@ if [loading](#loading) is not set the routes will use it as a replacement
 ### defaultAuthComponent
 
 if [authComponent](#authcomponent) is not set will use it as a replacement
+
+## Component
+
+if you want to have a component being in App.svelte instead of having a hole file for it use `Component`
+
+`Component` takes a prop called `name` to identify it
+
+to use a `Component` set `component` to the `Component`'s name
+
+you could also set [authComponent](#authcomponent) and [loading](#loading) to the `Component`'s name
+
+example:
+
+```html
+<script>
+  import { Router, Component } from "super-svelte-router";
+
+  const routes = [
+    {
+      path: "/",
+      component: "main",
+    },
+  ];
+</script>
+
+<Router {routes}>
+  <Component name="main">
+    <h1>This is the main page</h1>
+  </Component>
+</Router>
+```
+
+## isActive
+
+if you want to check if a route is use `isActive`
+
+`isActive` is a derived store the it's value is the function
+
+that you pass the pathname of route you want to check if it's active
+
+example:
+
+```html
+<script>
+  import { isActive } from "super-svelte-router";
+</script>
+
+<h1 class:red={$isActive("/")}>I'm Red if route is /</h1>
+
+<style>
+  .red { color: red }
+</style>
+```
 
 ## redirect
 
