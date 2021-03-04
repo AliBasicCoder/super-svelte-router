@@ -5,8 +5,10 @@ context("Default", () => {
     cy.visit("http://localhost:5000/");
   });
 
-  it("visit Main by default", () => {
+  it("visit Main by default + isActive works", () => {
     cy.get("#target #text").should("contain.text", "I'm main");
+
+    cy.get("#isActive").should("have.css", "color").and("eq", "rgb(255, 0, 0)");
   });
 
   it("url input + not found + use:link works", () => {

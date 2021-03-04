@@ -1,4 +1,4 @@
-import { routerStore } from "./routerStore";
+import { routerStore, isActive } from "./routerStore";
 
 /**
  * @param {HTMLLinkElement} node
@@ -31,6 +31,7 @@ export function linkHandler(e) {
 export function redirect(path, replace) {
   routerStore.redirect(path, replace);
 }
-export { routerStore };
+
+export { routerStore, isActive };
 export { default as Router } from "./Router.svelte";
 export { default as Component } from "./Component.svelte";

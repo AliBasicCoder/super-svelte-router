@@ -1,5 +1,11 @@
 <script>
-  import { Router, Component, link, routerStore } from "super-svelte-router";
+  import {
+    Router,
+    Component,
+    link,
+    routerStore,
+    isActive,
+  } from "super-svelte-router";
   import { routes } from "./routes";
 
   let inputVal;
@@ -30,6 +36,8 @@
         <a href={route.path} use:link>{route.path}</a>
       {/if}
     {/each}
+
+    <div id="isActive" class:red={$isActive("/")}>I'm red</div>
 
     <div id="target">
       <Router {routes}>
@@ -94,5 +102,8 @@
   }
   .result a {
     margin-right: 5px;
+  }
+  .red {
+    color: red;
   }
 </style>
