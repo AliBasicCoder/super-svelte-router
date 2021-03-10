@@ -1,7 +1,7 @@
 {
   "name": "super-svelte-router",
   "description": "A powerful, easy to use Router for svelte",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "svelte": "src/index.js",
