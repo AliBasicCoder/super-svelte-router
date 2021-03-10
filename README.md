@@ -348,7 +348,7 @@ example
 
 ```js
 [
-  ...{
+  {
     path: "/login",
     component: Login,
   },
