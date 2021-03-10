@@ -238,4 +238,47 @@ context("Default", () => {
     cy.get("#target #text").should("contain.text", "Inline Error");
     cy.get("#target #data").should("contain.text", "a fail");
   });
+
+  it("authRedirect -- immediate failing", () => {
+    // /redirect
+    cy.get("input#url-input").type("/redirect{enter}");
+
+    cy.get("#target #text").should("contain.text", "I'm main");
+
+    cy.location("pathname").should("eq", "/");
+  });
+
+  it("authRedirect -- fail after 1s", () => {
+    // /wait-redirect
+    cy.get("input#url-input").type("/wait-redirect{enter}");
+
+    cy.get("#target #text").should(
+      "contain.text",
+      "Checking if you authenticated"
+    );
+    cy.wait(1000);
+    cy.get("#target #text").should("contain.text", "I'm main");
+    cy.location("pathname").should("eq", "/");
+  });
+
+  it("authRedirect -- inline -- immediate failing", () => {
+    // /inline-redirect
+    cy.get("input#url-input").type("/inline-redirect{enter}");
+
+    cy.get("#target #text").should("contain.text", "Inline Params");
+    cy.location("pathname").should("eq", "/inline");
+  });
+
+  it("authRedirect -- inline -- fail after 1s", () => {
+    // /inline-redirect
+    cy.get("input#url-input").type("/inline-wait-redirect{enter}");
+
+    cy.get("#target #text").should(
+      "contain.text",
+      "Checking if you authenticated"
+    );
+    cy.wait(1000);
+    cy.get("#target #text").should("contain.text", "Inline Params");
+    cy.location("pathname").should("eq", "/inline");
+  });
 });

@@ -67,6 +67,7 @@ export const routes = [
     authenticator: () => wait(1000, true),
     authComponent: Auth,
     component: Protected,
+    authRedirect: "/",
   },
   {
     path: "/protected-false",
@@ -79,6 +80,7 @@ export const routes = [
     authenticator: () => true,
     authComponent: Auth,
     component: Protected,
+    authRedirect: "/",
   },
   {
     path: "/inline",
@@ -99,6 +101,7 @@ export const routes = [
     authenticator: () => wait(1000, true),
     authComponent: "auth",
     component: "protected",
+    authRedirect: "/",
   },
   {
     path: "/inline-protected-false",
@@ -111,6 +114,7 @@ export const routes = [
     authenticator: () => true,
     authComponent: Auth,
     component: "protected",
+    authRedirect: "/",
   },
   {
     path: "/inline-loading/:param",
@@ -125,6 +129,34 @@ export const routes = [
       component: () => wait(1000, "a fail", true),
       loading: "loading",
     },
+  },
+  {
+    path: "/redirect",
+    component: "protected",
+    authComponent: Auth,
+    authenticator: () => false,
+    authRedirect: "/",
+  },
+  {
+    path: "/wait-redirect",
+    component: "protected",
+    authComponent: Auth,
+    authenticator: () => wait(1000, "a fail", true),
+    authRedirect: "/",
+  },
+  {
+    path: "/inline-redirect",
+    component: "protected",
+    authComponent: "auth",
+    authenticator: () => false,
+    authRedirect: "/inline",
+  },
+  {
+    path: "/inline-wait-redirect",
+    component: "protected",
+    authComponent: "auth",
+    authenticator: () => wait(1000, false),
+    authRedirect: "/inline",
   },
   {
     path: "**",

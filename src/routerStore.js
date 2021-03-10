@@ -79,8 +79,10 @@ function routerStoreCreator() {
               });
             })
             .catch((error) => {
-              this.update({ error, authStatus: "error" });
               console.error(error);
+              route.authRedirect
+                ? this.redirect(route.authRedirect)
+                : this.update({ error, authStatus: "error" });
             });
         } else {
           if (route.authRedirect && !authResult) {
