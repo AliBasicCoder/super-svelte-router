@@ -17,6 +17,7 @@ a small, simple router for [svelte](https://github.com/sveltejs/svelte)
   - [Lazy loaded routes](#Lazy-loaded-routes)
     - [loading](#loading)
   - [Protected routes](#protected-routes)
+    - [authRedirect](#authredirect)
     - [authComponent](#authcomponent)
   - [Metadata](#metadata)
     - [defaultLoading](#defaultloading)
@@ -339,6 +340,30 @@ example:
 ]
 ```
 
+### authRedirect
+
+authRedirect is an option to redirect the user to a different route (/login for example) if authentication fails
+
+example
+
+```js
+[
+  ...{
+    path: "/login",
+    component: Login,
+  },
+  {
+    path: "/user-info",
+    component: UserInfo,
+    authenticator: () => {
+      /* some authentication logic... */
+    },
+    // redirects the user to "/login" if he is not logged in
+    authRedirect: "/login",
+  },
+];
+```
+
 ### authComponent
 
 authComponent is an an option to display a component if authentication failed or pending
@@ -404,6 +429,8 @@ to use a `Component` set `component` to the `Component`'s name
 
 you could also set [authComponent](#authcomponent) and [loading](#loading) to the `Component`'s name
 
+you could access every thing on [routerStore](#routerstore) via slot props
+
 example:
 
 ```html
@@ -415,12 +442,19 @@ example:
       path: "/",
       component: "main",
     },
+    {
+      path: "/article/:id",
+      component: "article",
+    },
   ];
 </script>
 
 <Router {routes}>
   <Component name="main">
     <h1>This is the main page</h1>
+  </Component>
+  <Component name="article" let:params>
+    <h1>This is article {params.id}</h1>
   </Component>
 </Router>
 ```
