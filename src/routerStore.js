@@ -69,6 +69,10 @@ function routerStoreCreator() {
             (component = route.authComponent || metadata?.defaultAuthComponent);
           authResult
             .then((authResult) => {
+              if (route.authRedirect && !authResult) {
+                this.redirect(route.authRedirect);
+                return;
+              }
               this.update({
                 authStatus: authResult ? "none" : "fail",
                 ...(authResult && this.renderRoute(route, metadata)),
@@ -79,6 +83,10 @@ function routerStoreCreator() {
               console.error(error);
             });
         } else {
+          if (route.authRedirect && !authResult) {
+            updateHistory(route.authRedirect, false);
+            return this.render(value, route.authRedirect);
+          }
           allowShowing = !!authResult;
           authStatus = authResult ? "none" : "fail";
           !authResult &&
@@ -104,14 +112,19 @@ function routerStoreCreator() {
       };
     },
     redirect(pathname, replace) {
-      if (replace) history.replaceState(undefined, document.title, pathname);
-      else history.pushState(undefined, document.title, pathname);
+      updateHistory(pathname, replace);
       update((value) => this.render(value, pathname));
     },
     setRoutes(routes) {
       update((value) => this.render({ ...value, routes }, value.pathname));
     },
   };
+}
+
+function updateHistory(pathname, replace) {
+  replace
+    ? history.replaceState(undefined, document.title, pathname)
+    : history.pushState(undefined, document.title, pathname);
 }
 
 export const routerStore = routerStoreCreator();
