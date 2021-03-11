@@ -5,7 +5,7 @@ const isStaticRoute = (obj) => obj.component;
 const isMetadataRoute = (obj) => obj.metadata;
 
 const defaultValue = {
-  pathname: window.location.pathname,
+  pathname: "",
   params: {},
   authStatus: "none",
   loadingStatus: "none",
@@ -117,8 +117,8 @@ function routerStoreCreator() {
       updateHistory(pathname, replace);
       update((value) => this.render(value, pathname));
     },
-    setRoutes(routes) {
-      update((value) => this.render({ ...value, routes }, value.pathname));
+    setRoutes(routes, pathname) {
+      update((value) => this.render({ ...value, routes }, pathname));
     },
   };
 }
@@ -135,9 +135,11 @@ export const isActive = derived(routerStore, ($routerStore) => (path) =>
   $routerStore.currentRoute.path === path
 );
 
-window.addEventListener("popstate", () => {
-  routerStore.redirect(window.location.pathname);
-});
+if (typeof window !== "undefined") {
+  window.addEventListener("popstate", () => {
+    routerStore.redirect(window.location.pathname);
+  });
+}
 
 function getRoute(pathname, routes) {
   let params = {};

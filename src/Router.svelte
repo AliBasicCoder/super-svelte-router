@@ -3,8 +3,10 @@
 
   export let routes;
   export let noProps;
+  export let initialPathname =
+    typeof window !== "undefined" ? window.location.pathname : "/";
 
-  $: routerStore.setRoutes(routes);
+  $: routerStore.setRoutes(routes, initialPathname);
 </script>
 
 {#if noProps}
