@@ -32,7 +32,7 @@
   <p>route: {$routerStore.pathname}</p>
   <div class="result">
     {#each routes as route}
-      {#if !route.metadata}
+      {#if !route.metadata && !route.layout}
         <a href={route.path} use:link>{route.path}</a>
       {/if}
     {/each}

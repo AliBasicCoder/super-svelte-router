@@ -5,6 +5,7 @@ import Loading from "./Loading.svelte";
 import Loading2 from "./Loading2.svelte";
 import Protected from "./Protected.svelte";
 import Auth from "./Auth.svelte";
+import Layout from "./Layout.svelte";
 
 function wait(ms, value, rej) {
   return new Promise((resolve, reject) =>
@@ -20,6 +21,10 @@ export const routes = [
   {
     path: "/",
     component: Main,
+  },
+  {
+    layout: 1,
+    component: Layout,
   },
   {
     path: "/foo/:param/",

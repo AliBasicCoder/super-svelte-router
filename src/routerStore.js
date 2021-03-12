@@ -10,6 +10,7 @@ const defaultValue = {
   authStatus: "none",
   loadingStatus: "none",
   component: undefined,
+  layout: undefined,
   error: undefined,
   targetName: undefined,
   currentRoute: undefined,
@@ -56,7 +57,10 @@ function routerStoreCreator() {
       let authStatus = "none";
       let loadingStatus = "none";
       let allowShowing = true;
-      const [route, params, metadata] = getRoute(pathname, value.routes);
+      const [route, params, metadata, layout] = getRoute(
+        pathname,
+        value.routes
+      );
       if (!route) {
         return { ...value, pathname };
       }
@@ -110,6 +114,7 @@ function routerStoreCreator() {
         pathname,
         params,
         currentRoute: route,
+        layout: layout?.component,
         ...(allowShowing && this.renderRoute(route, metadata)),
       };
     },
@@ -145,9 +150,17 @@ function getRoute(pathname, routes) {
   let params = {};
   let notFoundRoute;
   let metadataRoute;
+  let layoutRoute;
+  let layoutRouteFor;
+
   const pathnameParts = pathname.split("/");
   for (let i = 0; i < routes.length; i++) {
     const route = routes[i];
+    if (typeof route.layout === "number" || route.layout === true) {
+      layoutRoute = route;
+      typeof route.layout === "number" && (layoutRouteFor = route.layout);
+      continue;
+    }
     if (isMetadataRoute(route)) {
       metadataRoute = route;
       continue;
@@ -175,10 +188,17 @@ function getRoute(pathname, routes) {
       }
     }
     if (matches) {
-      return [route, params, metadataRoute];
+      return [route, params, metadataRoute, layoutRoute];
+    }
+    if (layoutRoute && layoutRouteFor !== undefined) {
+      layoutRouteFor--;
+      if (layoutRouteFor === 0) {
+        layoutRoute = undefined;
+        layoutRouteFor = undefined;
+      }
     }
   }
-  return [notFoundRoute, params, metadataRoute];
+  return [notFoundRoute, params, metadataRoute, layoutRoute];
 }
 
 /** LO stands for LoopOver */

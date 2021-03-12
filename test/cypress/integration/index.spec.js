@@ -29,10 +29,15 @@ context("Default", () => {
     cy.get("#target #text").should("contain.text", "I'm main");
   });
 
-  it("params works", () => {
+  it("params works + layout works", () => {
     // /foo/:param
     cy.get("input#url-input").type("/foo/something/{enter}");
 
+    cy.get("#target > #layout").should("be.visible");
+    cy.get("#target > #layout > #layout-data").should(
+      "contain.text",
+      JSON.stringify({ param: "something" })
+    );
     cy.get("#target #text").should("contain.text", "I'm params");
     cy.get("#target #data").should(
       "contain.text",
