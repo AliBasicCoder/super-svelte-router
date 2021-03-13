@@ -1,0 +1,22 @@
+[
+  {
+    "layout": true,
+    "component": "./src/Layout.svelte"
+  },
+  {
+    "path": "/",
+    "component": "./src/Index.svelte"
+  },
+  {
+    "path": "/about",
+    "component": "./src/About.svelte"
+  },
+  {
+    "path": "/blob/:title/:text",
+    "component": "./src/Blog.svelte"
+  },
+  {
+    "path": "/blob",
+    "component": "./src/Blog.svelte"
+  }
+]

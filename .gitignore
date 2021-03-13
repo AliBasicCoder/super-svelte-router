@@ -1,5 +1,5 @@
 node_modules
-public/build
+build/
 dist/
 test/cypress/screenshots
 test/cypress/fixtures
