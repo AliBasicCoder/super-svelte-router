@@ -2,14 +2,16 @@ import { convertRoutes } from "./convert";
 import path from "path";
 import fs from "fs";
 
-let first = false;
-
 const defaultOptions = {
   appPath: "./src/App.svelte",
   routesPath: "./super-svelte-router.json",
+  client: false,
 };
 
 export default function superSvelteRouter(options = defaultOptions) {
+  let first = false;
+  options = { ...defaultOptions, ...options };
+
   return {
     name: "super-svelte-router",
     async load() {
@@ -19,7 +21,11 @@ export default function superSvelteRouter(options = defaultOptions) {
         path.join(process.cwd(), options.routesPath),
         "utf8"
       );
-      return convertRoutes(file, options.appPath);
+      const result = convertRoutes(file, options.appPath, options.client);
+
+      console.log(result);
+
+      return result;
     },
   };
 }

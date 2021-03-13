@@ -7,13 +7,13 @@
     <a href="/" use:link>Main</a>
   </div>
   <div class="link" class:active={$isActive("/about")}>
-    <a href="/" use:link>About</a>
+    <a href="/about" use:link>About</a>
   </div>
   <div
     class="link"
     class:active={$isActive("/blog/:title/:text") || $isActive("/blog")}
   >
-    <a href="/" use:link>Blog</a>
+    <a href="/blog" use:link>Blog</a>
   </div>
 </header>
 <main>

@@ -6,17 +6,19 @@ import superSvelteRouter from "../rollup-plugin/rollupPlugin";
 const mode = process.env.NODE_ENV;
 const dev = mode === "development";
 
-export const config = (input, file, bool) => ({
+export const config = (input, fileOrDir, client) => ({
   input,
   output: {
-    file,
-    format: "commonjs",
+    file: !client && fileOrDir,
+    dir: client && fileOrDir,
+    format: client ? "module" : "commonjs",
   },
+  preserveEntrySignatures: !client,
   plugins: [
     svelte({
       compilerOptions: {
         dev,
-        generate: "ssr",
+        generate: client ? "dom" : "ssr",
         hydratable: true,
       },
       emitCss: false,
@@ -25,8 +27,11 @@ export const config = (input, file, bool) => ({
       dedupe: ["svelte"],
     }),
     commonjs(),
-    bool && superSvelteRouter(),
+    superSvelteRouter({ client }),
   ],
 });
 
-export default [config("ssr.js", "build/ssr.js", true)];
+export default [
+  config("_fake.js", "build", true),
+  config("_fake.js", "build/ssr.js", false),
+];
