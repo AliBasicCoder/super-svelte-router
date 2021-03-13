@@ -4,7 +4,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import superSvelteRouter from "../rollup-plugin/rollupPlugin";
 
 const mode = process.env.NODE_ENV;
-const dev = mode === "development";
+const dev = mode !== "production";
 
 export const config = (input, fileOrDir, client) => ({
   input,

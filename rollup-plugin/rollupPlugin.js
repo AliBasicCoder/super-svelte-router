@@ -23,8 +23,6 @@ export default function superSvelteRouter(options = defaultOptions) {
       );
       const result = convertRoutes(file, options.appPath, options.client);
 
-      console.log(result);
-
       return result;
     },
   };

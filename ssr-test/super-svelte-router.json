@@ -12,11 +12,11 @@
     "component": "./src/About.svelte"
   },
   {
-    "path": "/blob/:title/:text",
+    "path": "/blog",
     "component": "./src/Blog.svelte"
   },
   {
-    "path": "/blob",
+    "path": "/blog/:title/:text",
     "component": "./src/Blog.svelte"
   }
 ]
