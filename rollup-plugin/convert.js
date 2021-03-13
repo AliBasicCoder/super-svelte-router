@@ -1,11 +1,12 @@
 /**
  * @param {string} routesFile
+ * @param {string} appPath
  * @returns {string}
  */
-export function convertRoutes(routesFile, appPath = "./src/App.svelte") {
+export function convertRoutes(routesFile, appPath) {
   const routes = JSON.parse(routesFile);
   let resultTop = `import App from "${appPath}";\n`;
-  let resultBottom = "const routes = [";
+  let resultBottom = "const routes = [\n";
   const map = new Map();
 
   for (const route of routes) {
@@ -15,9 +16,9 @@ export function convertRoutes(routesFile, appPath = "./src/App.svelte") {
     resultTop += `import ${componentId} from "${route.component}";\n`;
 
     if (route.layout) {
-      resultBottom += `{ layout: ${route.layout}, component: ${componentId} },`;
+      resultBottom += `  { layout: ${route.layout}, component: ${componentId} },\n`;
     } else {
-      resultBottom += `{ path: "${route.path}", component: ${componentId} },`;
+      resultBottom += `  { path: "${route.path}", component: ${componentId} },\n`;
     }
   }
 
