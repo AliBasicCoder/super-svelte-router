@@ -41,7 +41,7 @@ export function convertRoutes(routesFile, appPath, client) {
   return (
     `${resultTop}\n\n${resultBottom};\n\n` +
     (client
-      ? "new App({ target: document.body, props: { routes, initialPathname: window.location.pathname } });"
+      ? "new App({ target: document.body, props: { routes, initialPathname: window.location.pathname }, hydrate: true });"
       : "export { App, routes }")
   );
 }
