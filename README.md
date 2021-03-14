@@ -23,6 +23,7 @@ a small, simple router for [svelte](https://github.com/sveltejs/svelte)
     - [defaultLoading](#defaultloading)
     - [defaultAuthComponent](defaultauthcomponent)
   - [Component](#component)
+  - [Layout](#layout)
   - [isActive](#isactive)
   - [redirect](#redirect)
   - [link](#link)
@@ -395,6 +396,97 @@ example
   {:else if $routerStore.authStatus === "error"} Sorry, Unknown error happened
   {/if}
 </h1>
+```
+
+## Layout routes
+
+layout routes is to create a layouts that wraps some other routes
+
+### layout
+
+layout could be a number or true if number that means the layout should be applied for the next layout value of routes
+
+if true that layout will be applied for the routes next it unless another layout overwrite it
+
+example
+
+```js
+[
+  {
+    layout: 1,
+    component: Layout1
+  },
+  {
+    // Layout1 WILL be applied here
+    path: "/example1",
+    component: SomeComponent
+  },
+  {
+    // Layout1 WILL NOT be applied here
+    // 'cause it only convert it's 1 next item(s)
+    path: "/example2",
+    component: SomeComponent
+  },
+  {
+    layout: true,
+    component: Layout2
+  },
+  {
+    // Layout2 WILL be applied here
+    path: "/example3",
+    component: SomeComponent
+  },
+  {
+    // Layout2 WILL be applied here
+    // 'cause it will continue to convert routes until another layout overwrites it
+    path: "/example4",
+    component: SomeComponent
+  },
+  {
+    layout: true,
+    component: Layout3
+  }
+  {
+    // Layout3 WILL be applied here
+    // and Layout2 WILL NOT
+    // 'cause Layout3 overwrited Layout2
+    path: "/example5",
+    component: SomeComponent
+  },
+  {
+    layout: 1,
+    component: Layout4
+  },
+  {
+    // Layout3 WILL NOT be applied here
+    // 'cause Layout4 overwrited Layout3
+    path: "/example6",
+    component: SomeComponent
+  },
+]
+```
+
+### writing Layouts
+
+example
+
+```html
+<script>
+  // all the other $routerStore properties is still accessible via props
+  export let params;
+</script>
+
+<h1>I'm Layout</h1>
+<div>
+  <slot />
+</div>
+
+<style>
+  div {
+    border: 2px solid black;
+    padding: 20px;
+  }
+</style>
 ```
 
 ## Metadata
