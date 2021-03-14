@@ -5,16 +5,18 @@ import superSvelteRouter from "../rollup-plugin/rollupPlugin";
 
 const mode = process.env.NODE_ENV;
 const dev = mode !== "production";
+const legacy = !dev;
 
 export const config = (input, fileOrDir, client) => ({
   input,
   output: {
     file: !client && fileOrDir,
     dir: client && fileOrDir,
-    format: client ? "module" : "commonjs",
+    format: client ? (legacy ? "system" : "module") : "commonjs",
   },
   preserveEntrySignatures: !client,
   plugins: [
+    superSvelteRouter({ client }),
     svelte({
       compilerOptions: {
         dev,
@@ -27,7 +29,6 @@ export const config = (input, fileOrDir, client) => ({
       dedupe: ["svelte"],
     }),
     commonjs(),
-    superSvelteRouter({ client }),
   ],
 });
 
