@@ -1,10 +1,80 @@
+import type { SvelteComponent } from "svelte";
 import { writable, derived } from "svelte/store";
 
-const isLazyRoute = (obj) => obj.lazyLoad;
-const isStaticRoute = (obj) => obj.component;
-const isMetadataRoute = (obj) => obj.metadata;
+type objString = { [key: string]: string };
 
-const defaultValue = {
+interface MetadataRoute {
+  metadata: true;
+  defaultLoading?: SvelteComponent;
+  defaultAuthComponent?: SvelteComponent;
+}
+
+interface LayoutRoute {
+  layout: true | number;
+  component: SvelteComponent;
+}
+
+interface LazyRoute {
+  path: string;
+  lazyLoad: {
+    component: () => Promise<SvelteComponent>;
+    loading?: SvelteComponent | string | false;
+  };
+}
+
+interface StaticRoute {
+  path: string;
+  component: SvelteComponent | string;
+}
+
+interface ProtectedRouteBase {
+  authenticator: () => boolean | Promise<boolean>;
+  authComponent?: SvelteComponent | string | false;
+  authRedirect?: string;
+}
+
+type ProtectedStaticRoute = StaticRoute & ProtectedRouteBase;
+type ProtectedLazyRoute = LazyRoute & ProtectedRouteBase;
+type ProtectedRoute = ProtectedLazyRoute | ProtectedStaticRoute;
+
+type Route =
+  | MetadataRoute
+  | LayoutRoute
+  | StaticRoute
+  | LazyRoute
+  | ProtectedStaticRoute
+  | ProtectedLazyRoute;
+
+type Route2 =
+  | StaticRoute
+  | LazyRoute
+  | ProtectedStaticRoute
+  | ProtectedLazyRoute;
+
+interface RouterStoreValue {
+  pathname: string;
+  params: objString;
+  loadingStatus: "none" | "pending" | "error";
+  authStatus: "none" | "pending" | "fail" | "error";
+  component?: SvelteComponent;
+  layout?: SvelteComponent;
+  error?: Error;
+  targetName?: string;
+  currentRoute: Route2;
+  routes: Route[];
+}
+
+const isLazyRoute = (obj: any): obj is LazyRoute => obj.lazyLoad !== undefined;
+const isStaticRoute = (obj: any): obj is StaticRoute =>
+  obj.component !== undefined;
+const isMetadataRoute = (obj: any): obj is MetadataRoute =>
+  obj.metadata === true;
+const isLayoutRoute = (obj: any): obj is LayoutRoute =>
+  obj.layout !== undefined;
+const isProtectedRoute = (obj: any): obj is ProtectedRoute =>
+  obj.authenticator !== undefined;
+
+const defaultValue: RouterStoreValue = {
   pathname: "",
   params: {},
   authStatus: "none",
@@ -13,18 +83,24 @@ const defaultValue = {
   layout: undefined,
   error: undefined,
   targetName: undefined,
-  currentRoute: undefined,
+  // a placeholder
+  // @ts-ignore
+  currentRoute: { path: "", component: undefined },
   routes: [],
 };
 
 function routerStoreCreator() {
   const { subscribe, update } = writable(defaultValue);
+
   return {
     subscribe,
-    update(newValue) {
+    update(newValue: Partial<RouterStoreValue>) {
       update((value) => ({ ...value, ...newValue }));
     },
-    renderRoute(route, metadata) {
+    renderRoute(
+      route: Route2,
+      metadata?: MetadataRoute
+    ): Partial<RouterStoreValue> {
       if (!isLazyRoute(route)) {
         return typeof route.component === "string"
           ? { targetName: route.component }
@@ -46,16 +122,18 @@ function routerStoreCreator() {
             ? undefined
             : route.lazyLoad.loading || metadata?.defaultLoading,
         targetName:
-          typeof route.lazyLoad.loading === "string" && route.lazyLoad.loading,
+          typeof route.lazyLoad.loading === "string"
+            ? route.lazyLoad.loading
+            : undefined,
         loadingStatus: "pending",
       };
     },
-    render(value, pathname) {
+    render(value: RouterStoreValue, pathname: string): RouterStoreValue {
       let component;
       let targetName;
       let error;
-      let authStatus = "none";
-      let loadingStatus = "none";
+      let authStatus: RouterStoreValue["authStatus"] = "none";
+      let loadingStatus: RouterStoreValue["loadingStatus"] = "none";
       let allowShowing = true;
       const [route, params, metadata, layout] = getRoute(
         pathname,
@@ -64,7 +142,7 @@ function routerStoreCreator() {
       if (!route) {
         return { ...value, pathname };
       }
-      if (route.authenticator) {
+      if (isProtectedRoute(route)) {
         const authResult = route.authenticator();
         if (authResult instanceof Promise) {
           allowShowing = false;
@@ -107,9 +185,11 @@ function routerStoreCreator() {
       return {
         routes: value.routes,
         component,
+        // @ts-ignore
         targetName,
         error,
         authStatus,
+        // @ts-ignore
         loadingStatus,
         pathname,
         params,
@@ -118,17 +198,17 @@ function routerStoreCreator() {
         ...(allowShowing && this.renderRoute(route, metadata)),
       };
     },
-    redirect(pathname, replace) {
+    redirect(pathname: string, replace?: boolean) {
       updateHistory(pathname, replace);
       update((value) => this.render(value, pathname));
     },
-    setRoutes(routes, pathname) {
+    setRoutes(routes: Route[], pathname: string) {
       update((value) => this.render({ ...value, routes }, pathname));
     },
   };
 }
 
-function updateHistory(pathname, replace) {
+function updateHistory(pathname: string, replace?: boolean) {
   replace
     ? history.replaceState(undefined, document.title, pathname)
     : history.pushState(undefined, document.title, pathname);
@@ -136,7 +216,7 @@ function updateHistory(pathname, replace) {
 
 export const routerStore = routerStoreCreator();
 
-export const isActive = derived(routerStore, ($routerStore) => (path) =>
+export const isActive = derived(routerStore, ($routerStore) => (path: string) =>
   $routerStore.currentRoute.path === path
 );
 
@@ -146,17 +226,20 @@ if (typeof window !== "undefined") {
   });
 }
 
-function getRoute(pathname, routes) {
-  let params = {};
-  let notFoundRoute;
-  let metadataRoute;
-  let layoutRoute;
-  let layoutRouteFor;
+function getRoute(
+  pathname: string,
+  routes: Route[]
+): [Route2 | undefined, objString, MetadataRoute?, LayoutRoute?] {
+  let params: objString = {};
+  let notFoundRoute: Route2 | undefined;
+  let metadataRoute: MetadataRoute | undefined;
+  let layoutRoute: LayoutRoute | undefined;
+  let layoutRouteFor: number | undefined;
 
   const pathnameParts = pathname.split("/");
   for (let i = 0; i < routes.length; i++) {
     const route = routes[i];
-    if (typeof route.layout === "number" || route.layout === true) {
+    if (isLayoutRoute(route)) {
       layoutRoute = route;
       typeof route.layout === "number" && (layoutRouteFor = route.layout);
       continue;
@@ -166,7 +249,7 @@ function getRoute(pathname, routes) {
       continue;
     }
     params = {};
-    if (isStaticRoute(route) && route.path === "**") {
+    if (!isProtectedRoute(route) && route.path === "**") {
       notFoundRoute = route;
       continue;
     }
@@ -179,7 +262,7 @@ function getRoute(pathname, routes) {
       )
         continue;
       if (routePart?.startsWith(":")) {
-        params[routePart.slice(1)] = decodeURI(pathnamePart);
+        params[routePart.slice(1)] = decodeURI(pathnamePart || "");
         continue;
       }
       if (routePart !== pathnamePart) {
@@ -202,13 +285,13 @@ function getRoute(pathname, routes) {
 }
 
 /** LO stands for LoopOver */
-export function* LO(...args) {
+export function* LO(...args: string[][]) {
   const len = Math.max.apply(
     undefined,
     args.map((arg) => arg.length)
   );
   for (let i = 0; i < len; i++) {
-    const result = [];
+    const result: (string | undefined)[] = [];
     for (let y = 0; y < args.length; y++) {
       result.push(args[y][i]);
     }

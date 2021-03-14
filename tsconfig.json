@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "sourceMap": false,
+    "declaration": true
+  },
+  "extends": "@tsconfig/svelte/tsconfig.json"
+}

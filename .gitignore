@@ -5,3 +5,5 @@ test/cypress/screenshots
 test/cypress/fixtures
 test/cypress/plugins
 test/cypress/support
+src/*.js
+src/*.d.ts

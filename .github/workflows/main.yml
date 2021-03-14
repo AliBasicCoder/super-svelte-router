@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   cypress-run:
@@ -12,6 +12,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Install Deps
+        run: npm install
+      - name: Build super-svelte-router
+        run: npm run build
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
