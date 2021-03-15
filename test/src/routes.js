@@ -43,9 +43,8 @@ export const routes = [
   },
   {
     path: "/lazy-default/",
-    lazyLoad: {
-      component: () => wait(2000, import("./lazyLoad.svelte")),
-    },
+    component: () => wait(2000, import("./lazyLoad.svelte")),
+    lazyLoad: true,
   },
   {
     path: "/lazy-pr/:param",

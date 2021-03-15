@@ -14,12 +14,19 @@ interface LayoutRoute {
   component: SvelteComponent;
 }
 
-interface LazyRoute {
+interface DeprecatedLazyRoute {
   path: string;
   lazyLoad: {
     component: () => Promise<SvelteComponent>;
     loading?: SvelteComponent | string | false;
   };
+}
+
+interface LazyRoute {
+  path: string;
+  lazyLoad: true;
+  component: () => Promise<SvelteComponent>;
+  loading?: SvelteComponent | string | false;
 }
 
 interface StaticRoute {
@@ -34,22 +41,19 @@ interface ProtectedRouteBase {
 }
 
 type ProtectedStaticRoute = StaticRoute & ProtectedRouteBase;
+type DeprecatedProtectedLazyRoute = DeprecatedLazyRoute & ProtectedRouteBase;
 type ProtectedLazyRoute = LazyRoute & ProtectedRouteBase;
 type ProtectedRoute = ProtectedLazyRoute | ProtectedStaticRoute;
 
-type Route =
-  | MetadataRoute
-  | LayoutRoute
-  | StaticRoute
-  | LazyRoute
-  | ProtectedStaticRoute
-  | ProtectedLazyRoute;
+type Route = Route3 | DeprecatedLazyRoute | DeprecatedProtectedLazyRoute;
 
 type Route2 =
   | StaticRoute
   | LazyRoute
   | ProtectedStaticRoute
   | ProtectedLazyRoute;
+
+type Route3 = Route2 | MetadataRoute | LayoutRoute;
 
 interface RouterStoreValue {
   pathname: string;
@@ -61,18 +65,21 @@ interface RouterStoreValue {
   error?: Error;
   targetName?: string;
   currentRoute: Route2;
-  routes: Route[];
+  routes: Route3[];
 }
 
-const isLazyRoute = (obj: any): obj is LazyRoute => obj.lazyLoad !== undefined;
+const isDeprecatedLazyRoute = (obj: any): obj is DeprecatedLazyRoute =>
+  typeof obj.lazyLoad === "object";
+const isLazyRoute = (obj: any): obj is LayoutRoute => obj.lazyLoad === true;
 const isStaticRoute = (obj: any): obj is StaticRoute =>
-  obj.component !== undefined;
+  (typeof obj.component === "function" || typeof obj.component === "string") &&
+  !obj.lazyLoad;
 const isMetadataRoute = (obj: any): obj is MetadataRoute =>
   obj.metadata === true;
 const isLayoutRoute = (obj: any): obj is LayoutRoute =>
-  obj.layout !== undefined;
+  typeof obj.layout === "number" || obj.layout === true;
 const isProtectedRoute = (obj: any): obj is ProtectedRoute =>
-  obj.authenticator !== undefined;
+  typeof obj.authenticator === "function";
 
 const defaultValue: RouterStoreValue = {
   pathname: "",
@@ -89,6 +96,39 @@ const defaultValue: RouterStoreValue = {
   routes: [],
 };
 
+function convertLazy(
+  oldLazyRoute: DeprecatedLazyRoute,
+  noWarn = false
+): LazyRoute {
+  if (!noWarn)
+    console.warn(
+      `super-svelte-router: passed deprecated formatting for LazyLoaded routes support for this format will be dropped by v2.0.0`
+    );
+
+  return {
+    path: oldLazyRoute.path,
+    lazyLoad: true,
+    // @ts-ignore
+    component: oldLazyRoute.lazyLoad.component,
+    loading: oldLazyRoute.lazyLoad.loading,
+  };
+}
+
+function convertDeprecated(route: Route): Route3 {
+  if (isDeprecatedLazyRoute(route)) {
+    if (isProtectedRoute(route))
+      return {
+        ...convertLazy(route),
+        authenticator: route.authenticator,
+        authComponent: route.authComponent,
+        authRedirect: route.authRedirect,
+      };
+
+    return convertLazy(route);
+  }
+  return route;
+}
+
 function routerStoreCreator() {
   const { subscribe, update } = writable(defaultValue);
 
@@ -101,12 +141,12 @@ function routerStoreCreator() {
       route: Route2,
       metadata?: MetadataRoute
     ): Partial<RouterStoreValue> {
-      if (!isLazyRoute(route)) {
+      if (isStaticRoute(route)) {
         return typeof route.component === "string"
           ? { targetName: route.component }
           : { component: route.component };
       }
-      route.lazyLoad
+      route
         .component()
         .then((md) =>
           this.update({ component: md.default, targetName: undefined })
@@ -117,14 +157,11 @@ function routerStoreCreator() {
         });
       return {
         component:
-          route.lazyLoad.loading === false ||
-          typeof route.lazyLoad.loading === "string"
+          route.loading === false || typeof route.loading === "string"
             ? undefined
-            : route.lazyLoad.loading || metadata?.defaultLoading,
+            : route.loading || metadata?.defaultLoading,
         targetName:
-          typeof route.lazyLoad.loading === "string"
-            ? route.lazyLoad.loading
-            : undefined,
+          typeof route.loading === "string" ? route.loading : undefined,
         loadingStatus: "pending",
       };
     },
@@ -203,7 +240,12 @@ function routerStoreCreator() {
       update((value) => this.render(value, pathname));
     },
     setRoutes(routes: Route[], pathname: string) {
-      update((value) => this.render({ ...value, routes }, pathname));
+      update((value) =>
+        this.render(
+          { ...value, routes: routes.map(convertDeprecated) },
+          pathname
+        )
+      );
     },
   };
 }
@@ -228,7 +270,7 @@ if (typeof window !== "undefined") {
 
 function getRoute(
   pathname: string,
-  routes: Route[]
+  routes: Route3[]
 ): [Route2 | undefined, objString, MetadataRoute?, LayoutRoute?] {
   let params: objString = {};
   let notFoundRoute: Route2 | undefined;
@@ -239,6 +281,7 @@ function getRoute(
   const pathnameParts = pathname.split("/");
   for (let i = 0; i < routes.length; i++) {
     const route = routes[i];
+
     if (isLayoutRoute(route)) {
       layoutRoute = route;
       typeof route.layout === "number" && (layoutRouteFor = route.layout);
