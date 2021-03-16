@@ -28,6 +28,8 @@ a small, simple router for [svelte](https://github.com/sveltejs/svelte)
   - [redirect](#redirect)
   - [link](#link)
   - [linkHandler](#linkhandler)
+- [Notes](#notes)
+  - [lazy-loaded routes deprecated format](#lazy-loaded-routes-deprecated-format)
 - [Setting up rollup for code splitting](#setting-up-rollup-for-code-splitting)
 
 # Usage
@@ -55,10 +57,9 @@ a small, simple router for [svelte](https://github.com/sveltejs/svelte)
     },
     {
       path: "/lazy",
-      lazyLoad: {
-        component: () => import("./Lazy.svelte"),
-        Loading: Loading,
-      },
+      component: () => import("./Lazy.svelte"),
+      loading: Loading,
+      lazyLoad: true,
     },
     {
       path: "/protected",
@@ -237,6 +238,8 @@ to use a lazy route you set lazyLoad.component to a function that returns a dyna
 
 you muse setup rollup first see [Setting up rollup for code splitting](#setting-up-rollup-for-code-splitting)
 
+if you use this module before v1.5.0 see [this note](#lazy-loaded-routes-deprecated-format)
+
 example:
 
 ```js
@@ -245,10 +248,9 @@ example:
   {
     path: "/lazy",
     // or lazy with params
-    path: "/lazy/:id"
-    lazyLoad: {
-      component: () => import("./lazy.svelte")
-    }
+    path: "/lazy/:id",
+    component: () => import("./lazy.svelte"),
+    lazyLoad: true
   }
   ...
 ]
@@ -279,10 +281,9 @@ example:
   ...
   {
     path: "/lazy",
-    lazyLoad: {
-      component: () => import("./lazy.svelte"),
-      loading: Loading
-    }
+    component: () => import("./lazy.svelte"),
+    loading: Loading,
+    lazyLoad: true
   }
   ...
 ]
@@ -625,6 +626,40 @@ linkHandler is a function that handles clicking on a link (a tag)
 <a href="/hello" on:click="{linkHandler}">/hello</a>
 <!-- or -->
 <a href="/hello" on:click="{handler}">/hello</a>
+```
+
+# Notes
+
+## lazy-loaded routes deprecated format
+
+since v1.5.0 lazy-loaded routes format changed and it will still be supported until v2.0.0
+
+deprecated (old) format:
+
+```js
+// deprecated
+[
+  {
+    path: "<path>",
+    lazyLoad: {
+      component: () => import("<component-path>"),
+      loading: LoadingComponent, // (optional)
+    },
+  },
+];
+```
+
+current format:
+
+```js
+[
+  {
+    path: "<path>",
+    component: () => import("<component-path>"),
+    loading: LoadingComponent, // (optional)
+    lazyLoad: true,
+  },
+];
 ```
 
 # Setting up rollup for code splitting
