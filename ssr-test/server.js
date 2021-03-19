@@ -10,11 +10,7 @@ app.use((req, res, next) => {
   const html = fs.readFileSync(path.join(process.cwd(), "index.html"), "utf-8");
 
   const result = App.render({ routes, initialPathname: req.path });
-  res.send(
-    html
-      .replace("%body%", result.html)
-      .replace("%style%", `<style>${result.css.code}</style>`)
-  );
+  res.send(html.replace("%body%", result.html));
 });
 
 app.listen(3000);

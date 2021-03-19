@@ -31,7 +31,7 @@ export function convertRoutes(routesFile, appPath, client) {
       if (route.layout) {
         resultBottom += `  { layout: ${route.layout}, component: ${componentId} },\n`;
       } else {
-        resultBottom += `  { path: "${route.path}", lazyLoad: { component: () => import("${route.component}") } },\n`;
+        resultBottom += `  { path: "${route.path}", component: () => import("${route.component}"), lazyLoad: true },\n`;
       }
     }
   }

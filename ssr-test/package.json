@@ -12,6 +12,7 @@
     "@rollup/plugin-node-resolve": "^11.2.0",
     "express": "^4.17.1",
     "rollup": "^2.39.0",
+    "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-svelte": "^7.1.0",
     "super-svelte-router": "file:..",
     "svelte": "^3.32.3"

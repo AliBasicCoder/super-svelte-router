@@ -72,8 +72,7 @@ const isDeprecatedLazyRoute = (obj: any): obj is DeprecatedLazyRoute =>
   typeof obj.lazyLoad === "object";
 const isLazyRoute = (obj: any): obj is LayoutRoute => obj.lazyLoad === true;
 const isStaticRoute = (obj: any): obj is StaticRoute =>
-  (typeof obj.component === "function" || typeof obj.component === "string") &&
-  !obj.lazyLoad;
+  obj.component !== undefined && !obj.lazyLoad;
 const isMetadataRoute = (obj: any): obj is MetadataRoute =>
   obj.metadata === true;
 const isLayoutRoute = (obj: any): obj is LayoutRoute =>

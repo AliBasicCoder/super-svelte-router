@@ -3,18 +3,18 @@
 </script>
 
 <header>
-  <div class="link" class:active={$isActive("/")}>
-    <a href="/" use:link>Main</a>
-  </div>
-  <div class="link" class:active={$isActive("/about")}>
-    <a href="/about" use:link>About</a>
-  </div>
-  <div
+  <a class="link" href="/" use:link class:active={$isActive("/")}> Main </a>
+  <a class="link" href="/about" use:link class:active={$isActive("/about")}>
+    About
+  </a>
+  <a
     class="link"
     class:active={$isActive("/blog/:title/:text") || $isActive("/blog")}
+    href="/blog"
+    use:link
   >
-    <a href="/blog" use:link>Blog</a>
-  </div>
+    Blog
+  </a>
 </header>
 <main>
   <slot />
@@ -24,6 +24,9 @@
   .link {
     padding: 10px;
     cursor: pointer;
+    display: inline-block;
+    color: black;
+    text-decoration: none;
   }
   .link.active {
     border-bottom: 2px solid green;

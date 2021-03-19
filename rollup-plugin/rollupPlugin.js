@@ -9,14 +9,15 @@ const defaultOptions = {
 };
 
 export default function superSvelteRouter(options = defaultOptions) {
-  let first = false;
+  let firstId;
   options = { ...defaultOptions, ...options };
 
   return {
     name: "super-svelte-router",
-    async load() {
-      if (first) return null;
-      first = true;
+    async load(id) {
+      if (firstId === undefined) firstId = id;
+      if (firstId !== id) return null;
+
       const file = await fs.promises.readFile(
         path.join(process.cwd(), options.routesPath),
         "utf8"

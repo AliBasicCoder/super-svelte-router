@@ -2,6 +2,7 @@ import svelte from "rollup-plugin-svelte";
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import superSvelteRouter from "../rollup-plugin/rollupPlugin";
+import css from "rollup-plugin-css-only";
 
 const mode = process.env.NODE_ENV;
 const dev = mode !== "production";
@@ -23,8 +24,8 @@ export const config = (input, fileOrDir, client) => ({
         generate: client ? "dom" : "ssr",
         hydratable: true,
       },
-      emitCss: false,
     }),
+    css({ output: "bundle.css" }),
     resolve({
       dedupe: ["svelte"],
     }),
