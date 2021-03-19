@@ -9,10 +9,14 @@
   "license": "MIT",
   "repository": "https://github.com/AliBasicCoder/super-svelte-router.git",
   "scripts": {
-    "dev": "npm --prefix=./test run dev",
+    "cy": "cypress open",
     "build": "rollup -c && tsc",
-    "test": "npm --prefix=./test run test",
-    "prepublishOnly": "rollup -c && tsc && npm --prefix=./test run test"
+    "build:test": "cd test && rollup -c",
+    "build:ssr-test": "cd ssr-test && rollup -c",
+    "start:test": "npm run build:test && sirv test/public",
+    "start:ssr-test": "cd ssr-test && rollup -c && node server",
+    "test": "npm run build:test && start-server-and-test \"sirv test/public\" http://localhost:5000 \"cypress run\"",
+    "prepublishOnly": "npm run build && npm run test"
   },
   "keywords": [
     "svelte",
@@ -24,8 +28,13 @@
     "@rollup/plugin-node-resolve": "^11.2.0",
     "@rollup/plugin-typescript": "^8.2.0",
     "@tsconfig/svelte": "^1.0.10",
+    "cypress": "^6.4.0",
+    "express": "^4.17.1",
     "rollup": "^2.39.0",
+    "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-svelte": "^7.1.0",
+    "sirv-cli": "^1.0.0",
+    "start-server-and-test": "^1.12.0",
     "svelte": "^3.32.3",
     "tslib": "^2.1.0",
     "typescript": "^4.2.3"

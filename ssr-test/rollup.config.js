@@ -34,6 +34,6 @@ export const config = (input, fileOrDir, client) => ({
 });
 
 export default [
-  config("_fake.js", "build", true),
-  config("_fake.js", "build/ssr.js", false),
+  config("_fake.js", "public/build", true),
+  config("_fake.js", "public/build/ssr.js", false),
 ];

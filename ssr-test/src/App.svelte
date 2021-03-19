@@ -1,5 +1,5 @@
 <script>
-  import { Router } from "super-svelte-router";
+  import { Router } from "../../";
 
   export let routes;
   export let initialPathname;

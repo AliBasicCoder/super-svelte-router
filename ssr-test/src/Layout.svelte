@@ -1,5 +1,5 @@
 <script>
-  import { isActive, link } from "super-svelte-router";
+  import { isActive, link } from "../../";
 </script>
 
 <header>

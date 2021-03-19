@@ -1,5 +1,5 @@
 <script>
-  import { link } from "super-svelte-router";
+  import { link } from "../../";
   export let params;
 </script>
 
