@@ -1,5 +1,5 @@
 <script>
-  import { link } from "../../";
+  import { link } from "../../src/index.js";
   export let params;
 </script>
 

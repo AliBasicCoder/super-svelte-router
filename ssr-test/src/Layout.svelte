@@ -1,5 +1,5 @@
 <script>
-  import { isActive, link } from "../../";
+  import { isActive, link } from "../../src/index.js";
 </script>
 
 <header>

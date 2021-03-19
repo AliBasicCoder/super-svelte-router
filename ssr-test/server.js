@@ -3,7 +3,7 @@ const app = express();
 const fs = require("fs");
 const path = require("path");
 
-app.use("/build", express.static(path.join(process.cwd(), "build")));
+app.use("/build", express.static(path.join(process.cwd(), "public/build")));
 
 app.use((req, res, next) => {
   const { App, routes } = require("./public/build/ssr");
