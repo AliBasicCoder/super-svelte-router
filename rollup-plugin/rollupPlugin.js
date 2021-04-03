@@ -18,12 +18,20 @@ export default function superSvelteRouter(options = defaultOptions) {
       if (firstId === undefined) firstId = id;
       if (firstId !== id) return null;
 
-      const file = await fs.promises.readFile(
+      const routesFile = await fs.promises.readFile(
         path.join(process.cwd(), options.routesPath),
         "utf8"
       );
-      const result = convertRoutes(file, options.appPath, options.client);
+      const jsFile = await fs.promises.readFile(id, "utf8");
 
+      const result = convertRoutes(
+        routesFile,
+        jsFile,
+        options.appPath,
+        options.client
+      );
+
+      console.log(result);
       return result;
     },
   };

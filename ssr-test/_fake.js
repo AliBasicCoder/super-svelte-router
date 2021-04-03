@@ -1,3 +1,18 @@
+import { SSR } from "../src/index.js";
+
+function wait(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+SSR.setAuth({
+  async auth1() {
+    await wait(1000);
+    return true;
+  },
+});
+
 // this is just an empty file that will be overwritten by super-svelte-route's rollup plugin
 // it will convert routes defined in super-svelte-router.json into JS (as examples blow)
 // rollup and svelte will do that job of transforming that into JS (the final bundle)

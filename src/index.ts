@@ -22,6 +22,18 @@ export function redirect(path: string, replace?: boolean) {
   routerStore.redirect(path, replace);
 }
 
+type SSR_auth = { [key: string]: () => boolean | Promise<boolean> };
+
+export const SSR = {
+  auth: {} as SSR_auth,
+  setAuth(auth: SSR_auth) {
+    this.auth = auth;
+  },
+  getAuth(): SSR_auth {
+    return this.auth;
+  },
+};
+
 export { routerStore, isActive };
 export { default as Router } from "./Router.svelte";
 export { default as Component } from "./Component.svelte";

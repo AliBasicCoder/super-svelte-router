@@ -176,7 +176,7 @@ function routerStoreCreator() {
         value.routes
       );
       if (!route) {
-        return { ...value, pathname };
+        return { ...value, layout: layout?.component, pathname };
       }
       if (isProtectedRoute(route)) {
         const authResult = route.authenticator();

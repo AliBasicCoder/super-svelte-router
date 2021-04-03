@@ -1,15 +1,29 @@
 [
   {
+    "metadata": true,
+    "defaultLoading": "./src/Loading.svelte"
+  },
+  {
     "layout": true,
     "component": "./src/Layout.svelte"
   },
   {
+    "path": "**",
+    "component": "./src/NotFound.svelte"
+  },
+  {
     "path": "/",
-    "component": "./src/Index.svelte"
+    "component": "./src/Index.svelte",
+    "loading": "./src/Loading.svelte"
   },
   {
     "path": "/about",
     "component": "./src/About.svelte"
+  },
+  {
+    "path": "/protected",
+    "component": "./src/Protected.svelte",
+    "authenticator": "auth1"
   },
   {
     "path": "/blog",
