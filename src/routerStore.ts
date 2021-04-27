@@ -70,7 +70,6 @@ interface RouterStoreValue {
 
 const isDeprecatedLazyRoute = (obj: any): obj is DeprecatedLazyRoute =>
   typeof obj.lazyLoad === "object";
-const isLazyRoute = (obj: any): obj is LayoutRoute => obj.lazyLoad === true;
 const isStaticRoute = (obj: any): obj is StaticRoute =>
   (typeof obj.component === "function" || typeof obj.component === "string") &&
   !obj.lazyLoad;
