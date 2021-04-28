@@ -1,9 +1,9 @@
 node_modules
-public/build
+build/
 dist/
-test/cypress/screenshots
-test/cypress/fixtures
-test/cypress/plugins
-test/cypress/support
+cypress/screenshots
+cypress/fixtures
+cypress/plugins
+cypress/support
 src/*.js
 src/*.d.ts

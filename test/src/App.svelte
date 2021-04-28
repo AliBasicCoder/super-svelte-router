@@ -5,7 +5,7 @@
     link,
     routerStore,
     isActive,
-  } from "super-svelte-router";
+  } from "../../";
   import { routes } from "./routes";
 
   let inputVal;

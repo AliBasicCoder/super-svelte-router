@@ -71,8 +71,7 @@ interface RouterStoreValue {
 const isDeprecatedLazyRoute = (obj: any): obj is DeprecatedLazyRoute =>
   typeof obj.lazyLoad === "object";
 const isStaticRoute = (obj: any): obj is StaticRoute =>
-  (typeof obj.component === "function" || typeof obj.component === "string") &&
-  !obj.lazyLoad;
+  obj.component !== undefined && !obj.lazyLoad;
 const isMetadataRoute = (obj: any): obj is MetadataRoute =>
   obj.metadata === true;
 const isLayoutRoute = (obj: any): obj is LayoutRoute =>
@@ -176,7 +175,7 @@ function routerStoreCreator() {
         value.routes
       );
       if (!route) {
-        return { ...value, pathname };
+        return { ...value, layout: layout?.component, pathname };
       }
       if (isProtectedRoute(route)) {
         const authResult = route.authenticator();

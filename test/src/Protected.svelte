@@ -1,5 +1,5 @@
 <script>
-  import { routerStore } from "super-svelte-router";
+  import { routerStore } from "../../";
 </script>
 
 <h1 id="text">I'm protected</h1>

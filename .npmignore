@@ -1,1 +1,5 @@
 test/
+ssr-test/
+cypress/
+cypress.json
+tsconfig.json
