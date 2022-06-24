@@ -1,7 +1,11 @@
 import { routerStore, isActive } from "./routerStore";
 
-export function link(node: HTMLLinkElement, href?: string) {
+export function link(node: HTMLAnchorElement, href?: string) {
   href && (node.href = href);
+  if (node.localName !== "a") {
+    // @ts-ignore
+    node = node.parentNode;
+  }
   node.addEventListener("click", linkHandler);
   return {
     destroy() {
